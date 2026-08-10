@@ -1,0 +1,57 @@
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.cat-item {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cat-item:hover {
+  border-color: #15803d;
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(21, 128, 61, 0.1);
+}
+
+.icon-box {
+  width: 70px;
+  height: 70px;
+  background: #f0fdf4;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  transition: background 0.3s;
+}
+
+.cat-item:hover .icon-box {
+  background: #15803d;
+}
+
+.icon-box img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  transition: filter 0.3s;
+}
+
+.cat-item:hover img {
+  filter: brightness(0) invert(1); /* Inverts your black icons to white on hover */
+}
+
+.cat-item span {
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.95rem;
+}

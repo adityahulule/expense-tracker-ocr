@@ -1,0 +1,21 @@
+.charts-wrapper {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+.charts-wrapper h3 {
+  color: #1a3a16;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+/* Customizing Recharts Tooltip labels */
+.recharts-default-tooltip {
+  background-color: #fff !important;
+  border: none !important;
+}

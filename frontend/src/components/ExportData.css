@@ -1,0 +1,84 @@
+.export-data {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.export-data h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.export-description {
+  color: #6c757d;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.export-btn {
+  padding: 15px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.csv-btn {
+  background: #28a745;
+  color: white;
+}
+
+.csv-btn:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.json-btn {
+  background: #17a2b8;
+  color: white;
+}
+
+.json-btn:hover {
+  background: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.print-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.print-btn:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.export-info {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.export-info p {
+  margin: 8px 0;
+  color: #495057;
+}
+
+.export-info strong {
+  color: #333;
+}
+

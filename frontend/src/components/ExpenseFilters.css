@@ -1,0 +1,28 @@
+.expense-filters {
+  background: #f1f5f9;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.filter-input, .filter-select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
+
+.btn-clear {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}

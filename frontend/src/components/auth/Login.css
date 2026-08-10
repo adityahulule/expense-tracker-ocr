@@ -1,0 +1,130 @@
+/* Update your src/components/auth/Login.css */
+.auth-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background-color: #f4f7f6;
+}
+
+.auth-image-side {
+  flex: 1;
+  /* Since it's in public/assets/images/, use an absolute path */
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('../../assets/images/login-image.jpg'); 
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  color: white;
+}
+
+.auth-form-side {
+  width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.05);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 40px;
+}
+
+.auth-card h2 {
+  color: #2d5a27; /* Farming Green */
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.auth-input-group {
+  margin-bottom: 20px;
+}
+
+.auth-input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #444;
+}
+
+.auth-input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.auth-input-group input:focus {
+  border-color: #2d5a27;
+  box-shadow: 0 0 0 2px rgba(45, 90, 39, 0.1);
+  outline: none;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 14px;
+  background: #2d5a27;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.auth-btn:hover {
+  background: #1e3d1a;
+}
+
+.auth-footer {
+  margin-top: 25px;
+  text-align: center;
+  color: #666;
+}
+
+.auth-footer a {
+  color: #2d5a27;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .auth-image-side { display: none; }
+  .auth-form-side { width: 100%; }
+}
+
+.auth-image-side h1 {
+  font-size: 4.5rem; /* Significantly larger */
+  font-weight: 800; /* Extra bold for a modern look */
+  margin-bottom: 15px;
+  letter-spacing: -2px; /* Tight modern tracking */
+  line-height: 1.1;
+  /* Optional: Soft text shadow to make it pop against any background image */
+  text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.auth-image-side p {
+  font-size: 1.4rem; /* Slightly larger subtitle to match */
+  opacity: 0.9;
+  font-weight: 300;
+  max-width: 450px; /* Keeps the text readable */
+}
+
+.auth-card h2 {
+  color: #2d5a27;
+  font-size: 2.5rem; /* Modern bold heading for the form side */
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
