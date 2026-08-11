@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ExpenseForm.css';
 import { createExpense } from '../services/expenseService';
 
-function ExpenseForm({ onExpenseAdded }) {
+function ExpenseForm({ onExpenseAdded, initialCategory }) {
   const [formData, setFormData] = useState({
     description: '',
     amount: '',
-    category: 'General', // Default for farmers
+category: initialCategory || 'Seeds', // Default for farmers
     merchantName: '',
     cropType: '',
     season: '', // Default season
@@ -14,6 +14,15 @@ function ExpenseForm({ onExpenseAdded }) {
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+    useEffect(() => {
+    if (initialCategory) {
+      setFormData(prev => ({
+        ...prev,
+        category: initialCategory
+      }));
+    }
+  }, [initialCategory]);
 
   const handleChange = (e) => {
     setFormData({
