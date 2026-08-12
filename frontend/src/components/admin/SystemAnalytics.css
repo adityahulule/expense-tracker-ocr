@@ -1,0 +1,166 @@
+.system-analytics {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.analytics-header h2 {
+  margin: 0;
+  color: #14532d;
+  font-size: 28px;
+}
+
+.analytics-header p {
+  margin-top: 8px;
+  color: #64748b;
+}
+
+.analytics-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.analytics-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 22px;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.farmer-card {
+  background: linear-gradient(135deg, #166534, #22c55e);
+}
+
+.investment-card {
+  background: linear-gradient(135deg, #14532d, #15803d);
+}
+
+.expense-card {
+  background: linear-gradient(135deg, #92400e, #f59e0b);
+}
+
+.notification-card {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+}
+
+.analytics-icon {
+  font-size: 35px;
+}
+
+.analytics-card span {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.analytics-card h3 {
+  margin: 5px 0 0;
+  font-size: 25px;
+}
+
+.analytics-section {
+  background: white;
+  border-radius: 15px;
+  padding: 22px;
+  margin-bottom: 25px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.analytics-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.analytics-section-header h3 {
+  margin: 0;
+  color: #1e293b;
+}
+
+.analytics-section-header span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.chart-container {
+  width: 100%;
+  min-height: 300px;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.empty-analytics {
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  background: #f8fafc;
+  border-radius: 10px;
+}
+
+.season-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.season-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 18px;
+  background: #f0fdf4;
+  border: 1px solid #dcfce7;
+  border-radius: 10px;
+}
+
+.season-item strong {
+  color: #166534;
+}
+
+.season-item span {
+  color: #15803d;
+  font-weight: 700;
+}
+
+@media (max-width: 1000px) {
+  .analytics-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .analytics-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-header h2 {
+    font-size: 22px;
+  }
+
+  .analytics-card h3 {
+    font-size: 20px;
+  }
+}

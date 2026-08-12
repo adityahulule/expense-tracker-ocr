@@ -1,143 +1,340 @@
 .expense-summary {
-  width: 100%;
+    width: 100%;
 }
+
+/* =====================================================
+   TITLE
+===================================================== */
 
 .expense-summary h2 {
-  margin-bottom: 30px;
-  color: #14532d; /* Deep Forest Green */
-  font-weight: 700;
+    margin-bottom: 10px;
+    color: #14532d;
+    font-weight: 700;
 }
+
+
+/* =====================================================
+   SUMMARY CARDS
+===================================================== */
 
 .summary-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
-/* Primary card for Total Investment */
+
+/* =====================================================
+   SUMMARY CARD
+===================================================== */
+
 .summary-card {
-  background: linear-gradient(135deg, #14532d 0%, #15803d 100%);
-  color: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(21, 128, 61, 0.2);
+    background:
+        linear-gradient(
+            135deg,
+            #14532d 0%,
+            #15803d 100%
+        );
+
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(21, 128, 61, 0.2);
 }
 
-/* Secondary card for Activity Records */
+
+/* =====================================================
+   ACTIVITY RECORD CARD
+===================================================== */
+
 .summary-card.count-card {
-  background: linear-gradient(135deg, #b45309 0%, #d97706 100%); /* Earthy Amber/Gold */
+    background:
+        linear-gradient(
+            135deg,
+            #b45309 0%,
+            #d97706 100%
+        );
 }
+
+
+/* =====================================================
+   CARD TITLE
+===================================================== */
 
 .summary-card h3 {
-  font-size: 1rem;
-  margin-bottom: 10px;
-  opacity: 0.9;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    opacity: 0.9;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
+
+
+/* =====================================================
+   CARD AMOUNT
+===================================================== */
 
 .summary-amount {
-  font-size: 2.5rem;
-  font-weight: bold;
+    font-size: 2.5rem;
+    font-weight: bold;
 }
 
-/* New Grid for Crop vs Resource analysis */
+
+/* =====================================================
+   ANALYSIS GRID
+===================================================== */
+
 .analysis-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 30px;
-  margin-top: 30px;
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(350px, 1fr)
+        );
+
+    gap: 30px;
+    margin-top: 30px;
 }
+
+
+/* =====================================================
+   BREAKDOWN CARD
+===================================================== */
 
 .category-breakdown {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 15px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    background: #ffffff;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow:
+        0 2px 8px
+        rgba(0, 0, 0, 0.05);
 }
+
+
+/* =====================================================
+   BREAKDOWN TITLE
+===================================================== */
 
 .category-breakdown h3 {
-  margin-bottom: 20px;
-  color: #1e293b;
-  font-size: 1.2rem;
-  border-bottom: 2px solid #f1f5f9;
-  padding-bottom: 10px;
+    margin-bottom: 20px;
+
+    color: #1e293b;
+
+    font-size: 1.2rem;
+
+    border-bottom:
+        2px solid #f1f5f9;
+
+    padding-bottom: 10px;
 }
+
+
+/* =====================================================
+   CATEGORY LIST
+===================================================== */
 
 .category-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
+
+
+/* =====================================================
+   CATEGORY ITEM
+===================================================== */
 
 .category-item {
-  background: #f8fafc;
-  padding: 15px;
-  border-radius: 10px;
-  border: 1px solid #f1f5f9;
-  transition: transform 0.2s;
+    background: #f8fafc;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    border: 1px solid #f1f5f9;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
+
+
+/* =====================================================
+   CATEGORY HOVER
+===================================================== */
 
 .category-item:hover {
-  transform: translateX(5px);
-  border-color: #bbf7d0;
+    transform: translateX(5px);
+
+    border-color: #bbf7d0;
+
+    box-shadow:
+        0 3px 10px
+        rgba(21, 128, 61, 0.08);
 }
+
+
+/* =====================================================
+   CATEGORY HEADER
+===================================================== */
 
 .category-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    margin-bottom: 8px;
+
+    gap: 15px;
 }
+
+
+/* =====================================================
+   CATEGORY NAME
+===================================================== */
 
 .category-name {
-  font-weight: 600;
-  color: #334155;
+    font-weight: 600;
+    color: #334155;
 }
+
+
+/* =====================================================
+   CATEGORY AMOUNT
+===================================================== */
 
 .category-amount {
-  font-weight: bold;
-  color: #15803d; /* Green for money */
+    font-weight: bold;
+    color: #15803d;
 }
+
+
+/* =====================================================
+   CATEGORY BAR
+===================================================== */
 
 .category-bar {
-  height: 8px;
-  background: #e2e8f0;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 5px;
+    height: 8px;
+
+    background: #e2e8f0;
+
+    border-radius: 4px;
+
+    overflow: hidden;
+
+    margin-bottom: 5px;
 }
+
+
+/* =====================================================
+   CATEGORY BAR FILL
+===================================================== */
 
 .category-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #15803d 0%, #22c55e 100%);
-  transition: width 0.5s ease-out;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #15803d 0%,
+            #22c55e 100%
+        );
+
+    transition:
+        width 0.5s ease-out;
 }
+
+
+/* =====================================================
+   PERCENTAGE
+===================================================== */
 
 .category-percentage {
-  font-size: 0.85rem;
-  color: #64748b;
-  text-align: right;
+    font-size: 0.85rem;
+
+    color: #64748b;
+
+    text-align: right;
 }
+
+
+/* =====================================================
+   NO DATA
+===================================================== */
 
 .no-data {
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
-  background: #f8fafc;
-  border-radius: 15px;
-  border: 2px dashed #e2e8f0;
+    text-align: center;
+
+    padding: 60px;
+
+    color: #94a3b8;
+
+    background: #f8fafc;
+
+    border-radius: 15px;
+
+    border:
+        2px dashed #e2e8f0;
 }
 
+
+/* =====================================================
+   CHART SECTION
+===================================================== */
+
+.chart-section {
+    width: 100%;
+
+    margin-top: 30px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
 @media (max-width: 768px) {
-  .summary-cards, .analysis-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .summary-amount {
-    font-size: 2rem;
-  }
+
+    .summary-cards,
+    .analysis-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .summary-amount {
+        font-size: 2rem;
+    }
+
+
+    .category-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .category-amount {
+        font-size: 0.95rem;
+    }
+
+
+    .expense-summary {
+        padding: 5px;
+    }
+
 }

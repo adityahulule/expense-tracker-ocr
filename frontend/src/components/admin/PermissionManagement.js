@@ -2,14 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { getAllFarmers } from '../../services/adminService';
 import axios from 'axios';
 
+import './PermissionManagement.css';
+
 const API_URL =
     process.env.REACT_APP_API_URL ||
     'http://localhost:8081';
 
-function PermissionManagement() {
+function PermissionManagement({ selectedFarmer: farmerFromParent }) {
 
     const [farmers, setFarmers] = useState([]);
-    const [selectedFarmer, setSelectedFarmer] = useState('');
+
+    const [selectedFarmer, setSelectedFarmer] =
+        useState(farmerFromParent || '');
 
     const [permissions, setPermissions] = useState({
         expenseAccess: true,
@@ -20,8 +24,12 @@ function PermissionManagement() {
         schemeAccess: true
     });
 
-    const [loadingFarmers, setLoadingFarmers] = useState(true);
-    const [loadingPermissions, setLoadingPermissions] = useState(false);
+    const [loadingFarmers, setLoadingFarmers] =
+        useState(true);
+
+    const [loadingPermissions, setLoadingPermissions] =
+        useState(false);
+
     const [saving, setSaving] = useState(false);
 
     const [message, setMessage] = useState('');
@@ -39,14 +47,31 @@ function PermissionManagement() {
             try {
 
                 setLoadingFarmers(true);
+                setError('');
 
                 const data = await getAllFarmers();
 
-                setFarmers(data || []);
+                const farmerList =
+                    Array.isArray(data) ? data : [];
 
-                // Select first farmer automatically
-                if (data && data.length > 0) {
-                    setSelectedFarmer(String(data[0].id));
+                setFarmers(farmerList);
+
+                // If farmer came from Farmer Management,
+                // keep that farmer selected.
+                if (farmerFromParent) {
+
+                    setSelectedFarmer(
+                        String(farmerFromParent)
+                    );
+
+                } else if (
+                    farmerList.length > 0
+                ) {
+
+                    // Otherwise select first farmer
+                    setSelectedFarmer(
+                        String(farmerList[0].id)
+                    );
                 }
 
             } catch (err) {
@@ -69,7 +94,7 @@ function PermissionManagement() {
 
         loadFarmers();
 
-    }, []);
+    }, [farmerFromParent]);
 
 
     // ==========================================
@@ -213,6 +238,7 @@ function PermissionManagement() {
     if (loadingFarmers) {
 
         return (
+
             <div className="admin-page">
 
                 <h1>
@@ -227,6 +253,10 @@ function PermissionManagement() {
         );
     }
 
+
+    // ==========================================
+    // MAIN UI
+    // ==========================================
 
     return (
 
@@ -322,6 +352,7 @@ function PermissionManagement() {
                         👨‍🌾 Select Farmer
                     </label>
 
+
                     <select
                         value={selectedFarmer}
                         onChange={(e) =>
@@ -354,9 +385,11 @@ function PermissionManagement() {
                                     key={farmer.id}
                                     value={farmer.id}
                                 >
-                                    {farmer.fullName}
+                                    {farmer.fullName ||
+                                        farmer.name ||
+                                        'Unknown Farmer'}
                                     {' — '}
-                                    {farmer.email}
+                                    {farmer.email || ''}
                                 </option>
 
                             ))
@@ -394,7 +427,9 @@ function PermissionManagement() {
                             icon="💰"
                             title="Expense Tracking"
                             description="Allow farmer to add and manage expenses."
-                            enabled={permissions.expenseAccess}
+                            enabled={
+                                permissions.expenseAccess
+                            }
                             onToggle={() =>
                                 handleToggle(
                                     'expenseAccess'
@@ -407,7 +442,9 @@ function PermissionManagement() {
                             icon="🧾"
                             title="OCR Receipt Scanner"
                             description="Allow farmer to scan receipts using OCR."
-                            enabled={permissions.ocrAccess}
+                            enabled={
+                                permissions.ocrAccess
+                            }
                             onToggle={() =>
                                 handleToggle(
                                     'ocrAccess'
@@ -420,7 +457,9 @@ function PermissionManagement() {
                             icon="🔔"
                             title="Reminders"
                             description="Allow farmer to create and manage reminders."
-                            enabled={permissions.reminderAccess}
+                            enabled={
+                                permissions.reminderAccess
+                            }
                             onToggle={() =>
                                 handleToggle(
                                     'reminderAccess'
@@ -433,7 +472,9 @@ function PermissionManagement() {
                             icon="🌾"
                             title="Crop Management"
                             description="Allow farmer to manage crops and farming activities."
-                            enabled={permissions.cropManagementAccess}
+                            enabled={
+                                permissions.cropManagementAccess
+                            }
                             onToggle={() =>
                                 handleToggle(
                                     'cropManagementAccess'
@@ -446,7 +487,9 @@ function PermissionManagement() {
                             icon="📊"
                             title="Expense Analytics"
                             description="Allow farmer to view expense analytics."
-                            enabled={permissions.analyticsAccess}
+                            enabled={
+                                permissions.analyticsAccess
+                            }
                             onToggle={() =>
                                 handleToggle(
                                     'analyticsAccess'
@@ -459,7 +502,9 @@ function PermissionManagement() {
                             icon="🏛️"
                             title="Government Schemes"
                             description="Allow farmer to view government schemes."
-                            enabled={permissions.schemeAccess}
+                            enabled={
+                                permissions.schemeAccess
+                            }
                             onToggle={() =>
                                 handleToggle(
                                     'schemeAccess'
@@ -491,10 +536,12 @@ function PermissionManagement() {
                                     : 1
                             }}
                         >
+
                             {saving
                                 ? 'Saving...'
                                 : '💾 Save Permissions'
                             }
+
                         </button>
 
                     </div>
@@ -627,6 +674,5 @@ function PermissionRow({
         </div>
     );
 }
-
 
 export default PermissionManagement;

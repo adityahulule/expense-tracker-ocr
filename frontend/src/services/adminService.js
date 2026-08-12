@@ -31,3 +31,17 @@ export const getFarmerById = async (id) => {
 
     return response.data;
 };
+
+
+// ==========================================
+// GET ADMIN DASHBOARD STATISTICS
+// ==========================================
+
+export const getAdminDashboardStats = async () => {
+
+    const response = await axios.get(
+        `${API_URL}/api/admin/dashboard-stats`
+    );
+
+    return response.data;
+};

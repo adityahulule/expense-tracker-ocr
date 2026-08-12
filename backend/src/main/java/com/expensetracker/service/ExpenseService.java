@@ -47,6 +47,7 @@ public class ExpenseService {
         }
         return expenseRepository.save(expense);
     }
+    
 
     // --- OCR LOGIC ---
     public Expense createExpenseFromReceipt(MultipartFile file, Long userId) throws Exception {

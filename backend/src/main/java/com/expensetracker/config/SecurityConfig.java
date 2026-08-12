@@ -29,31 +29,83 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
+                // =========================
+                // PUBLIC
+                // =========================
+
                 .requestMatchers(
                     "/",
                     "/error"
                 ).permitAll()
 
+
+                // =========================
+                // AUTH
+                // =========================
+
                 .requestMatchers(
                     "/api/auth/**"
                 ).permitAll()
+
+
+                // =========================
+                // GOVERNMENT SCHEMES
+                // =========================
+
+                .requestMatchers(
+                    "/api/schemes/**"
+                ).permitAll()
+
+
+                // =========================
+                // NOTIFICATIONS
+                // =========================
+
+                .requestMatchers(
+                    "/api/notifications/**"
+                ).permitAll()
+
+
+                // =========================
+                // EXPENSES
+                // =========================
 
                 .requestMatchers(
                     "/api/expenses/**"
                 ).permitAll()
 
+
+                // =========================
+                // REMINDERS
+                // =========================
+
                 .requestMatchers(
                     "/api/reminders/**"
                 ).permitAll()
+
+
+                // =========================
+                // ADMIN
+                // =========================
 
                 .requestMatchers(
                     "/api/admin/**"
                 ).permitAll()
 
+
+                // =========================
+                // CORS PREFLIGHT
+                // =========================
+
                 .requestMatchers(
                     HttpMethod.OPTIONS,
                     "/**"
                 ).permitAll()
+
+
+                // =========================
+                // OTHER REQUESTS
+                // =========================
 
                 .anyRequest().authenticated()
             );
@@ -61,6 +113,10 @@ public class SecurityConfig {
         return http.build();
     }
 
+
+    // ==========================================
+    // CORS CONFIGURATION
+    // ==========================================
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

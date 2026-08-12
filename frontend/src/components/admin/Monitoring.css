@@ -1,0 +1,235 @@
+.monitoring-page {
+    width: 100%;
+}
+
+.monitoring-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.monitoring-header h1 {
+    margin: 0;
+    color: #14532d;
+}
+
+.monitoring-header p {
+    margin-top: 8px;
+    color: #64748b;
+}
+
+.refresh-monitoring {
+    border: none;
+    background: #15803d;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.refresh-monitoring:hover {
+    background: #166534;
+}
+
+.monitoring-error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.monitoring-loading {
+    background: white;
+    padding: 50px;
+    text-align: center;
+    border-radius: 15px;
+    color: #64748b;
+}
+
+.monitoring-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.monitoring-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 22px;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.monitoring-card.total {
+    background: linear-gradient(135deg, #14532d, #15803d);
+}
+
+.monitoring-card.success {
+    background: linear-gradient(135deg, #166534, #22c55e);
+}
+
+.monitoring-card.failed {
+    background: linear-gradient(135deg, #991b1b, #ef4444);
+}
+
+.monitoring-card.amount {
+    background: linear-gradient(135deg, #92400e, #f59e0b);
+}
+
+.monitoring-card-icon {
+    font-size: 32px;
+}
+
+.monitoring-card span {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.monitoring-card h2 {
+    margin: 5px 0 0;
+    font-size: 24px;
+}
+
+.ocr-status-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border: 1px solid #dcfce7;
+    border-left: 5px solid #16a34a;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.ocr-status-card h3 {
+    margin: 0;
+    color: #166534;
+}
+
+.ocr-status-card p {
+    color: #64748b;
+    margin-bottom: 0;
+}
+
+.status-badge {
+    background: #dcfce7;
+    color: #166534;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.monitoring-table-card {
+    background: white;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+    padding: 22px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+    margin-bottom: 20px;
+}
+
+.table-header h2 {
+    margin: 0;
+    color: #1e293b;
+}
+
+.table-header p {
+    color: #64748b;
+}
+
+.monitoring-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.monitoring-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.monitoring-table th {
+    background: #f0fdf4;
+    color: #166534;
+    text-align: left;
+    padding: 14px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.monitoring-table td {
+    padding: 14px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #475569;
+    font-size: 13px;
+}
+
+.monitoring-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.amount-cell {
+    font-weight: 700;
+    color: #15803d !important;
+}
+
+.record-status {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    padding: 5px 9px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.no-monitoring-data {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+.no-monitoring-data:first-letter {
+    font-size: 35px;
+}
+
+.no-monitoring-data h3 {
+    color: #475569;
+}
+
+@media (max-width: 1100px) {
+    .monitoring-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .monitoring-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .monitoring-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .ocr-status-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}

@@ -44,11 +44,28 @@
 
 /* Main Content Styling */
 .main-viewport {
-  margin-left: 260px; /* Offset for sidebar */
+  margin-left: 260px;
   flex: 1;
   padding: 40px;
 }
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
+.profile-chip {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #15803d;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+}
 .content-container {
   background: white;
   padding: 30px;

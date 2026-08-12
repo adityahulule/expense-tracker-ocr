@@ -2,6 +2,226 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../services/authService';
 import './Login.css';
+function FarmerScene() {
+    return (
+        <svg
+            className="farmer-scene"
+            viewBox="0 0 400 440"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+
+            {/* Background hills */}
+            <path
+                d="M0 260 Q100 190 200 250 Q300 170 400 240 V440 H0Z"
+                fill="#4d9b45"
+            />
+
+            {/* Field rows */}
+            <path
+                d="M0 330 Q100 280 200 330 Q300 280 400 330"
+                fill="none"
+                stroke="#9dcc65"
+                strokeWidth="8"
+                opacity="0.7"
+            />
+
+            <path
+                d="M0 365 Q100 315 200 365 Q300 315 400 365"
+                fill="none"
+                stroke="#7fb84f"
+                strokeWidth="7"
+                opacity="0.7"
+            />
+
+            {/* Farmer body */}
+            <path
+                d="M145 280 Q200 245 255 280 L285 405 H115Z"
+                fill="#f1f5e9"
+            />
+
+            {/* Shirt shadow */}
+            <path
+                d="M145 280 Q200 310 255 280 L270 405 H130Z"
+                fill="#e3eadb"
+            />
+
+            {/* Neck */}
+            <rect
+                x="177"
+                y="220"
+                width="46"
+                height="45"
+                rx="18"
+                fill="#9a5f38"
+            />
+
+            {/* Face */}
+            <ellipse
+                cx="200"
+                cy="180"
+                rx="58"
+                ry="65"
+                fill="#a9693f"
+            />
+
+            {/* Ear */}
+            <ellipse
+                cx="144"
+                cy="185"
+                rx="10"
+                ry="16"
+                fill="#915b37"
+            />
+
+            <ellipse
+                cx="256"
+                cy="185"
+                rx="10"
+                ry="16"
+                fill="#915b37"
+            />
+
+            {/* Hair */}
+            <path
+                d="M145 160 Q150 105 200 105 Q250 105 255 160
+                   Q230 135 200 140 Q170 135 145 160Z"
+                fill="#3c281e"
+            />
+
+            {/* Farmer turban */}
+            <path
+                d="M137 145
+                   Q145 85 200 82
+                   Q255 85 263 145
+                   Q240 130 200 132
+                   Q160 130 137 145Z"
+                fill="#f8f4dc"
+            />
+
+            <path
+                d="M150 117 Q200 95 250 117"
+                fill="none"
+                stroke="#ddd5b9"
+                strokeWidth="9"
+            />
+
+            <path
+                d="M144 137 Q200 115 256 137"
+                fill="none"
+                stroke="#d4cbaa"
+                strokeWidth="8"
+            />
+
+            {/* Eyes */}
+            <ellipse
+                cx="178"
+                cy="178"
+                rx="5"
+                ry="6"
+                fill="#211914"
+            />
+
+            <ellipse
+                cx="222"
+                cy="178"
+                rx="5"
+                ry="6"
+                fill="#211914"
+            />
+
+            {/* Eyebrows */}
+            <path
+                d="M166 165 Q178 158 189 165"
+                fill="none"
+                stroke="#3d271d"
+                strokeWidth="5"
+                strokeLinecap="round"
+            />
+
+            <path
+                d="M211 165 Q222 158 234 165"
+                fill="none"
+                stroke="#3d271d"
+                strokeWidth="5"
+                strokeLinecap="round"
+            />
+
+            {/* Nose */}
+            <path
+                d="M200 180 L193 202 L204 204"
+                fill="none"
+                stroke="#79482f"
+                strokeWidth="4"
+                strokeLinecap="round"
+            />
+
+            {/* Smile */}
+            <path
+                d="M180 215 Q200 230 220 215"
+                fill="none"
+                stroke="#5d3324"
+                strokeWidth="5"
+                strokeLinecap="round"
+            />
+
+            {/* Arm */}
+            <path
+                d="M145 285 Q105 315 130 355"
+                fill="none"
+                stroke="#a9693f"
+                strokeWidth="24"
+                strokeLinecap="round"
+            />
+
+            <path
+                d="M255 285 Q295 315 275 350"
+                fill="none"
+                stroke="#a9693f"
+                strokeWidth="24"
+                strokeLinecap="round"
+            />
+
+            {/* Hoe */}
+            <line
+                x1="290"
+                y1="220"
+                x2="320"
+                y2="410"
+                stroke="#76502f"
+                strokeWidth="9"
+                strokeLinecap="round"
+            />
+
+            <path
+                d="M280 225 Q315 205 340 220"
+                fill="none"
+                stroke="#555"
+                strokeWidth="12"
+                strokeLinecap="round"
+            />
+
+            {/* Plants */}
+            <g stroke="#1c6b35" strokeWidth="5">
+                <path d="M55 390 L55 330" />
+                <path d="M55 350 Q35 330 25 342" />
+                <path d="M55 365 Q75 340 88 350" />
+
+                <path d="M350 400 L350 335" />
+                <path d="M350 355 Q330 335 318 345" />
+                <path d="M350 370 Q370 345 385 355" />
+            </g>
+
+            {/* Small crops */}
+            <g fill="#7fbd4f">
+                <ellipse cx="40" cy="340" rx="15" ry="7" />
+                <ellipse cx="75" cy="350" rx="15" ry="7" />
+                <ellipse cx="330" cy="344" rx="15" ry="7" />
+                <ellipse cx="375" cy="355" rx="15" ry="7" />
+            </g>
+
+        </svg>
+    );
+}
 
 function Login() {
 
@@ -22,10 +242,11 @@ function Login() {
 
         try {
 
-            const response = await loginUser({
-                email,
-                password
-            });
+const response = await loginUser({
+    email,
+    password,
+    loginType
+});
 
             console.log('Login Response:', response);
 
@@ -56,7 +277,7 @@ function Login() {
                     return;
                 }
 
-                navigate('/admin');
+               window.location.href = '/admin';
 
             } else {
 
@@ -68,8 +289,7 @@ function Login() {
                     localStorage.removeItem('user');
                     return;
                 }
-
-                navigate('/dashboard');
+window.location.href = '/dashboard';
             }
 
         } catch (err) {
@@ -88,64 +308,61 @@ function Login() {
 
         }
     };
+return (
+    <div className="krishi-auth-page">
+
+        <div className="auth-panel login-panel">
+
+            <div className="panel-overlay">
+
+                {/* BRAND */}
+                <div className="brand-section">
+                    <div className="brand-logo">🌾</div>
+
+                    <div>
+                        <h1>Krishi-Dhan</h1>
+                        <p>
+                            Smart Financial Tracking<br />
+                            for Farmers
+                        </p>
+                    </div>
+
+                    <div className="brand-badge">
+                        🌾 Grow Better,<br />
+                        Track Smarter
+                    </div>
+                </div>
 
 
-    return (
+                {/* HEADING */}
+                <div className="login-heading">
 
-        <div className="auth-container">
+                    <h2>
+                        Welcome Back <span>🌿</span>
+                    </h2>
 
-            {/* LEFT SIDE */}
-
-            <div className="auth-image-side">
-
-                <h1>🌾 Krishi-Dhan</h1>
-
-                <p>
-                    Harvesting prosperity through
-                    smart financial tracking.
-                </p>
-
-            </div>
-
-
-            {/* RIGHT SIDE */}
-
-            <div className="auth-form-side">
-
-                <div className="auth-card">
-
-                    <h2>Welcome Back</h2>
-
-                    <p className="login-subtitle">
+                    <p>
                         Login to your Krishi-Dhan account
                     </p>
 
+                </div>
 
-                    {/* ERROR */}
+
+                {/* LOGIN CARD */}
+                <div className="auth-card">
 
                     {error && (
-                        <p
-                            style={{
-                                color: '#dc2626',
-                                background: '#fef2f2',
-                                padding: '10px',
-                                borderRadius: '6px',
-                                marginBottom: '15px',
-                                fontSize: '14px'
-                            }}
-                        >
+                        <div className="login-error">
                             {error}
-                        </p>
+                        </div>
                     )}
-
 
                     <form onSubmit={handleLogin}>
 
-                        {/* EMAIL */}
-
-                        <div className="auth-input-group">
+                        <div className="input-group">
 
                             <label>
+                                <span className="input-icon">✉</span>
                                 Email Address
                             </label>
 
@@ -155,18 +372,17 @@ function Login() {
                                 onChange={(e) =>
                                     setEmail(e.target.value)
                                 }
-                                placeholder="name@farm.com"
+                                placeholder="Enter your email"
                                 required
                             />
 
                         </div>
 
 
-                        {/* PASSWORD */}
-
-                        <div className="auth-input-group">
+                        <div className="input-group">
 
                             <label>
+                                <span className="input-icon">🔒</span>
                                 Password
                             </label>
 
@@ -176,112 +392,91 @@ function Login() {
                                 onChange={(e) =>
                                     setPassword(e.target.value)
                                 }
-                                placeholder="••••••••"
+                                placeholder="Enter your password"
                                 required
                             />
 
                         </div>
 
 
-                        {/* LOGIN TYPE */}
+                        <div className="type-title">
+                            Login as
+                        </div>
 
-                        <div className="login-type-section">
+                        <div className="type-options">
 
-                            <label className="login-type-title">
-                                Login as
+                            <label
+                                className={`type-option ${
+                                    loginType === "FARMER"
+                                        ? "active"
+                                        : ""
+                                }`}
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="loginType"
+                                    value="FARMER"
+                                    checked={
+                                        loginType === "FARMER"
+                                    }
+                                    onChange={(e) =>
+                                        setLoginType(
+                                            e.target.value
+                                        )
+                                    }
+                                />
+
+                                👨‍🌾 Farmer
+
                             </label>
 
-                            <div className="login-type-options">
 
-                                <label
-                                    className={
-                                        `login-type-option ${
-                                            loginType === 'FARMER'
-                                                ? 'selected'
-                                                : ''
-                                        }`
+                            <label
+                                className={`type-option ${
+                                    loginType === "ADMIN"
+                                        ? "active"
+                                        : ""
+                                }`}
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="loginType"
+                                    value="ADMIN"
+                                    checked={
+                                        loginType === "ADMIN"
                                     }
-                                >
-
-                                    <input
-                                        type="radio"
-                                        name="loginType"
-                                        value="FARMER"
-                                        checked={
-                                            loginType === 'FARMER'
-                                        }
-                                        onChange={(e) =>
-                                            setLoginType(
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-
-                                    <span>
-                                        👨‍🌾 Farmer
-                                    </span>
-
-                                </label>
-
-
-                                <label
-                                    className={
-                                        `login-type-option ${
-                                            loginType === 'ADMIN'
-                                                ? 'selected'
-                                                : ''
-                                        }`
+                                    onChange={(e) =>
+                                        setLoginType(
+                                            e.target.value
+                                        )
                                     }
-                                >
+                                />
 
-                                    <input
-                                        type="radio"
-                                        name="loginType"
-                                        value="ADMIN"
-                                        checked={
-                                            loginType === 'ADMIN'
-                                        }
-                                        onChange={(e) =>
-                                            setLoginType(
-                                                e.target.value
-                                            )
-                                        }
-                                    />
+                                👨‍💼 Admin
 
-                                    <span>
-                                        👨‍💼 Admin
-                                    </span>
-
-                                </label>
-
-                            </div>
+                            </label>
 
                         </div>
 
 
-                        {/* LOGIN BUTTON */}
-
                         <button
                             type="submit"
-                            className="auth-btn"
+                            className="green-button"
                             disabled={loading}
                         >
                             {loading
-                                ? 'Signing In...'
-                                : '🔐 Sign In'
-                            }
+                                ? "Signing In..."
+                                : "➜  Sign In"}
                         </button>
 
                     </form>
 
 
-                    {/* REGISTER */}
-
-                    <div className="auth-footer">
+                    <div className="switch-auth">
 
                         Don't have an account?
-
-                        {' '}
 
                         <Link to="/register">
                             Register here
@@ -291,10 +486,58 @@ function Login() {
 
                 </div>
 
+
+                {/* FEATURES */}
+                <div className="feature-row">
+
+                    <div className="feature">
+                        <div className="feature-icon">₹</div>
+                        <strong>Track Expenses</strong>
+                        <span>
+                            Keep farm costs<br />
+                            under control
+                        </span>
+                    </div>
+
+                    <div className="feature">
+                        <div className="feature-icon">🌱</div>
+                        <strong>Plan Better</strong>
+                        <span>
+                            Make smart<br />
+                            farming decisions
+                        </span>
+                    </div>
+
+                    <div className="feature">
+                        <div className="feature-icon">🚜</div>
+                        <strong>Increase Yield</strong>
+                        <span>
+                            Get timely<br />
+                            insights
+                        </span>
+                    </div>
+
+                    <div className="feature">
+                        <div className="feature-icon">🛡️</div>
+                        <strong>Stay Secure</strong>
+                        <span>
+                            Your data is<br />
+                            safe with us
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div className="bottom-brand">
+                    🌾 Krishi-Dhan – Empowering Farmers 🌾
+                </div>
+
             </div>
 
         </div>
-    );
-}
 
+    </div>
+);
+}
 export default Login;

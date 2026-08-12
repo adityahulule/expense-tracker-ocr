@@ -1,53 +1,200 @@
 import React from 'react';
 import './InsightCards.css';
+import { useLanguage } from '../i18n/LanguageContext';
+
 
 const InsightCards = ({ expenses }) => {
-  // Logic to find highest spending crop
-  const cropTotals = expenses.reduce((acc, curr) => {
-    acc[curr.cropType] = (acc[curr.cropType] || 0) + curr.amount;
-    return acc;
-  }, {});
 
-  const topCrop = Object.entries(cropTotals).sort((a, b) => b[1] - a[1])[0] || ["None", 0];
+  const { t } = useLanguage();
 
-  // Logic to find most expensive category
-  const catTotals = expenses.reduce((acc, curr) => {
-    acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
-    return acc;
-  }, {});
 
-  const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0] || ["None", 0];
+  // =====================================================
+  // FIND TOP CROP
+  // =====================================================
+
+  const cropTotals = expenses.reduce(
+    (acc, curr) => {
+
+      const amount =
+        Number(curr.amount) || 0;
+
+      const crop =
+        curr.cropType || 'Unknown';
+
+      acc[crop] =
+        (acc[crop] || 0) + amount;
+
+      return acc;
+
+    },
+    {}
+  );
+
+
+  const topCrop =
+    Object.entries(cropTotals)
+      .sort(
+        (a, b) => b[1] - a[1]
+      )[0] || ['None', 0];
+
+
+  // =====================================================
+  // FIND MAJOR EXPENSE CATEGORY
+  // =====================================================
+
+  const catTotals = expenses.reduce(
+    (acc, curr) => {
+
+      const category =
+        curr.category || 'Other';
+
+      const amount =
+        Number(curr.amount) || 0;
+
+      acc[category] =
+        (acc[category] || 0) + amount;
+
+      return acc;
+
+    },
+    {}
+  );
+
+
+  const topCat =
+    Object.entries(catTotals)
+      .sort(
+        (a, b) => b[1] - a[1]
+      )[0] || ['None', 0];
+
+
+  // =====================================================
+  // FORMAT CURRENCY
+  // =====================================================
+
+  const formatAmount = (amount) => {
+
+    return Number(amount || 0)
+      .toLocaleString('en-IN');
+
+  };
+
+
+  // =====================================================
+  // COMPONENT
+  // =====================================================
 
   return (
+
     <div className="insights-container">
-      <div className="insight-card">
-        <div className="insight-icon">🌾</div>
-        <div className="insight-info">
-          <span>Top Crop Investment</span>
-          <h3>{topCrop[0]}</h3>
-          <p>₹{topCrop[1].toLocaleString()}</p>
-        </div>
-      </div>
+
+
+      {/* =================================================
+          TOP CROP
+      ================================================= */}
 
       <div className="insight-card">
-        <div className="insight-icon">⚠️</div>
-        <div className="insight-info">
-          <span>Major Expense Category</span>
-          <h3>{topCat[0]}</h3>
-          <p>₹{topCat[1].toLocaleString()}</p>
+
+        <div className="insight-icon">
+          🌾
         </div>
+
+
+        <div className="insight-info">
+
+          <span>
+            {t('topCropInvestment')}
+          </span>
+
+
+          <h3>
+            {topCrop[0] === 'None'
+              ? t('noData')
+              : topCrop[0]
+            }
+          </h3>
+
+
+          <p>
+            ₹{formatAmount(topCrop[1])}
+          </p>
+
+        </div>
+
       </div>
+
+
+      {/* =================================================
+          MAJOR EXPENSE CATEGORY
+      ================================================= */}
+
+      <div className="insight-card">
+
+        <div className="insight-icon">
+          ⚠️
+        </div>
+
+
+        <div className="insight-info">
+
+          <span>
+            {t('majorExpenseCategory')}
+          </span>
+
+
+          <h3>
+            {topCat[0] === 'None'
+              ? t('noData')
+              : topCat[0]
+            }
+          </h3>
+
+
+          <p>
+            ₹{formatAmount(topCat[1])}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      {/* =================================================
+          ACTIVE SEASON
+      ================================================= */}
 
       <div className="insight-card highlight">
-        <div className="insight-icon">📅</div>
-        <div className="insight-info">
-          <span>Active Season</span>
-          <h3>Kharif 2026</h3>
-          <p>Investment Period</p>
+
+        <div className="insight-icon">
+          📅
         </div>
+
+
+        <div className="insight-info">
+
+          <span>
+            {t('activeSeason')}
+          </span>
+
+
+          <h3>
+            Kharif 2026
+          </h3>
+
+
+          <p>
+            {t('investmentPeriod')}
+          </p>
+
+        </div>
+
       </div>
+
     </div>
+
   );
+
 };
+
 
 export default InsightCards;

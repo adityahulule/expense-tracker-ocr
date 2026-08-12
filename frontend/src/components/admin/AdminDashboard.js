@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import FarmerManagement from './FarmerManagement';
 import PermissionManagement from './PermissionManagement';
@@ -7,122 +7,591 @@ import NotificationManagement from './NotificationManagement';
 import Monitoring from './Monitoring';
 import SystemAnalytics from './SystemAnalytics';
 
+import { getAdminDashboardStats } from '../../services/adminService';
+
 import './Admin.css';
+
 
 function AdminDashboard() {
 
-    const [activeTab, setActiveTab] = useState('dashboard');
+    const [activeTab, setActiveTab] =
+        useState('dashboard');
 
-    const userData = localStorage.getItem('user');
+
+    // =====================================================
+    // SELECTED FARMER
+    // =====================================================
+
+    const [
+        selectedFarmerForPermission,
+        setSelectedFarmerForPermission
+    ] = useState(null);
+
+
+    // =====================================================
+    // ANALYTICS DATA
+    // =====================================================
+
+    const [farmers, setFarmers] =
+        useState([]);
+
+    const [expenses, setExpenses] =
+        useState([]);
+
+    const [notifications, setNotifications] =
+        useState([]);
+
+    const [analyticsLoading, setAnalyticsLoading] =
+        useState(false);
+
+
+    // =====================================================
+    // DASHBOARD STATISTICS
+    // =====================================================
+
+    const [stats, setStats] = useState({
+        totalFarmers: 0,
+        totalCrops: 0,
+        expenseRecords: 0,
+        activeReminders: 0
+    });
+
+    const [statsLoading, setStatsLoading] =
+        useState(true);
+
+
+    // =====================================================
+    // USER
+    // =====================================================
+
+    const userData =
+        localStorage.getItem('user');
+
     const user = userData
         ? JSON.parse(userData)
-        : { fullName: 'Administrator', role: 'ADMIN' };
+        : {
+            fullName: 'Administrator',
+            role: 'ADMIN'
+        };
+
+
+    // =====================================================
+    // LOAD DASHBOARD STATISTICS
+    // =====================================================
+
+    const loadDashboardStats = async () => {
+
+        try {
+
+            setStatsLoading(true);
+
+            const data =
+                await getAdminDashboardStats();
+
+            console.log(
+                'Admin Dashboard Stats:',
+                data
+            );
+
+
+            setStats({
+
+                totalFarmers:
+                    Number(data?.totalFarmers || 0),
+
+                totalCrops:
+                    Number(data?.totalCrops || 0),
+
+                expenseRecords:
+                    Number(data?.expenseRecords || 0),
+
+                activeReminders:
+                    Number(data?.activeReminders || 0)
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                'Dashboard statistics error:',
+                error
+            );
+
+        } finally {
+
+            setStatsLoading(false);
+
+        }
+
+    };
+
+
+    // =====================================================
+    // LOAD ANALYTICS DATA
+    // =====================================================
+
+    const loadAnalyticsData = async () => {
+
+        try {
+
+            setAnalyticsLoading(true);
+
+
+            // =============================================
+            // FARMERS
+            // =============================================
+
+            try {
+
+                const farmerResponse =
+                    await fetch(
+                        'https://expense-tracker-ocr-6.onrender.com/api/users/farmers'
+                    );
+
+
+                if (farmerResponse.ok) {
+
+                    const farmerData =
+                        await farmerResponse.json();
+
+                    setFarmers(
+                        Array.isArray(farmerData)
+                            ? farmerData
+                            : []
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    'Farmer analytics error:',
+                    error
+                );
+
+            }
+
+
+            // =============================================
+            // EXPENSES
+            // =============================================
+
+            try {
+
+                const expenseResponse =
+                    await fetch(
+                        'https://expense-tracker-ocr-6.onrender.com/api/expenses'
+                    );
+
+
+                if (expenseResponse.ok) {
+
+                    const expenseData =
+                        await expenseResponse.json();
+
+                    setExpenses(
+                        Array.isArray(expenseData)
+                            ? expenseData
+                            : []
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    'Expense analytics error:',
+                    error
+                );
+
+            }
+
+
+            // =============================================
+            // NOTIFICATIONS
+            // =============================================
+
+            try {
+
+                const notificationResponse =
+                    await fetch(
+                        'https://expense-tracker-ocr-6.onrender.com/api/notifications'
+                    );
+
+
+                if (notificationResponse.ok) {
+
+                    const notificationData =
+                        await notificationResponse.json();
+
+                    setNotifications(
+                        Array.isArray(notificationData)
+                            ? notificationData
+                            : []
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    'Notification analytics error:',
+                    error
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                'Analytics loading error:',
+                error
+            );
+
+        } finally {
+
+            setAnalyticsLoading(false);
+
+        }
+
+    };
+
+
+    // =====================================================
+    // INITIAL LOAD
+    // =====================================================
+
+    useEffect(() => {
+
+        // Dashboard cards
+        loadDashboardStats();
+
+        // Analytics data
+        loadAnalyticsData();
+
+    }, []);
+
+
+    // =====================================================
+    // LOGOUT
+    // =====================================================
 
     const handleLogout = () => {
+
         localStorage.removeItem('user');
+
         window.location.href = '/login';
+
     };
+
+
+    // =====================================================
+    // OPEN PERMISSION MANAGEMENT
+    // =====================================================
+
+    const handleManagePermissions = (farmerId) => {
+
+        setSelectedFarmerForPermission(
+            farmerId
+        );
+
+        setActiveTab(
+            'permissions'
+        );
+
+    };
+
+
+    // =====================================================
+    // RENDER CONTENT
+    // =====================================================
 
     const renderContent = () => {
 
         switch (activeTab) {
 
+
+            // ==========================================
+            // FARMERS
+            // ==========================================
+
             case 'farmers':
-                return <FarmerManagement />;
+
+                return (
+
+                    <FarmerManagement
+                        onManagePermissions={
+                            handleManagePermissions
+                        }
+                    />
+
+                );
+
+
+            // ==========================================
+            // PERMISSIONS
+            // ==========================================
 
             case 'permissions':
-                return <PermissionManagement />;
+
+                return (
+
+                    <PermissionManagement
+                        selectedFarmer={
+                            selectedFarmerForPermission
+                        }
+                    />
+
+                );
+
+
+            // ==========================================
+            // GOVERNMENT SCHEMES
+            // ==========================================
 
             case 'schemes':
-                return <SchemeManagement />;
+
+                return (
+
+                    <SchemeManagement />
+
+                );
+
+
+            // ==========================================
+            // NOTIFICATIONS
+            // ==========================================
 
             case 'notifications':
-                return <NotificationManagement />;
+
+                return (
+
+                    <NotificationManagement />
+
+                );
+
+
+            // ==========================================
+            // OCR MONITORING
+            // ==========================================
 
             case 'monitoring':
-                return <Monitoring />;
+
+                return (
+
+                    <Monitoring />
+
+                );
+
+
+            // ==========================================
+            // SYSTEM ANALYTICS
+            // ==========================================
 
             case 'analytics':
-                return <SystemAnalytics />;
+
+                return (
+
+                    <SystemAnalytics
+                        farmers={farmers}
+                        expenses={expenses}
+                        notifications={
+                            notifications
+                        }
+                    />
+
+                );
+
+
+            // ==========================================
+            // DASHBOARD
+            // ==========================================
 
             case 'dashboard':
+
             default:
+
                 return (
+
                     <div className="admin-dashboard">
 
+
+                        {/* ==================================
+                            HEADER
+                        ================================== */}
+
                         <div className="admin-page-header">
+
                             <div>
-                                <h1>👨‍💼 Admin Dashboard</h1>
+
+                                <h1>
+                                    👨‍💼 Admin Dashboard
+                                </h1>
 
                                 <p>
-                                    Welcome back, {user.fullName}
+                                    Welcome back,{' '}
+                                    {user.fullName}
                                 </p>
+
                             </div>
+
 
                             <div className="admin-date">
-                                📅 {new Date().toLocaleDateString(
-                                    'en-IN',
-                                    {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    }
-                                )}
+
+                                📅{' '}
+
+                                {new Date()
+                                    .toLocaleDateString(
+                                        'en-IN',
+                                        {
+                                            weekday:
+                                                'long',
+
+                                            year:
+                                                'numeric',
+
+                                            month:
+                                                'long',
+
+                                            day:
+                                                'numeric'
+                                        }
+                                    )}
+
                             </div>
+
                         </div>
 
-                        {/* Statistics */}
+
+                        {/* ==================================
+                            STATISTICS
+                        ================================== */}
 
                         <div className="admin-stat-grid">
 
+
+                            {/* FARMERS */}
+
                             <div className="admin-stat-card">
+
                                 <div className="stat-icon">
                                     👨‍🌾
                                 </div>
 
                                 <div>
-                                    <h2>0</h2>
-                                    <p>Total Farmers</p>
+
+                                    <h2>
+
+                                        {
+                                            statsLoading
+                                                ? '...'
+                                                : stats.totalFarmers
+                                        }
+
+                                    </h2>
+
+                                    <p>
+                                        Total Farmers
+                                    </p>
+
                                 </div>
+
                             </div>
 
+
+                            {/* CROPS */}
+
                             <div className="admin-stat-card">
+
                                 <div className="stat-icon">
                                     🌾
                                 </div>
 
                                 <div>
-                                    <h2>0</h2>
-                                    <p>Total Crops</p>
+
+                                    <h2>
+
+                                        {
+                                            statsLoading
+                                                ? '...'
+                                                : stats.totalCrops
+                                        }
+
+                                    </h2>
+
+                                    <p>
+                                        Total Crops
+                                    </p>
+
                                 </div>
+
                             </div>
 
+
+                            {/* EXPENSE RECORDS */}
+
                             <div className="admin-stat-card">
+
                                 <div className="stat-icon">
                                     🧾
                                 </div>
 
                                 <div>
-                                    <h2>0</h2>
-                                    <p>OCR Receipts</p>
+
+                                    <h2>
+
+                                        {
+                                            statsLoading
+                                                ? '...'
+                                                : stats.expenseRecords
+                                        }
+
+                                    </h2>
+
+                                    <p>
+                                        Expense Records
+                                    </p>
+
                                 </div>
+
                             </div>
 
+
+                            {/* ACTIVE REMINDERS */}
+
                             <div className="admin-stat-card">
+
                                 <div className="stat-icon">
                                     🔔
                                 </div>
 
                                 <div>
-                                    <h2>0</h2>
-                                    <p>Active Reminders</p>
+
+                                    <h2>
+
+                                        {
+                                            statsLoading
+                                                ? '...'
+                                                : stats.activeReminders
+                                        }
+
+                                    </h2>
+
+                                    <p>
+                                        Active Reminders
+                                    </p>
+
                                 </div>
+
                             </div>
+
 
                         </div>
 
-                        {/* Welcome Card */}
+
+                        {/* ==================================
+                            WELCOME CARD
+                        ================================== */}
 
                         <div className="admin-welcome-card">
 
@@ -131,82 +600,165 @@ function AdminDashboard() {
                             </h2>
 
                             <p>
-                                Manage farmers, permissions,
+
+                                Manage farmers,
+                                permissions,
                                 government schemes,
-                                notifications and system
-                                activities from this panel.
+                                notifications and
+                                system activities
+                                from this panel.
+
                             </p>
 
                         </div>
 
-                        {/* Quick Actions */}
+
+                        {/* ==================================
+                            QUICK ACTIONS
+                        ================================== */}
 
                         <div className="admin-section">
 
-                            <h2>Quick Actions</h2>
+                            <h2>
+                                Quick Actions
+                            </h2>
+
 
                             <div className="quick-action-grid">
 
+
+                                {/* FARMERS */}
+
                                 <button
                                     onClick={() =>
-                                        setActiveTab('farmers')
+                                        setActiveTab(
+                                            'farmers'
+                                        )
                                     }
                                 >
+
                                     👨‍🌾
+
                                     <span>
                                         Manage Farmers
                                     </span>
+
                                 </button>
 
+
+                                {/* ACCESS */}
+
                                 <button
-                                    onClick={() =>
-                                        setActiveTab('permissions')
-                                    }
+                                    onClick={() => {
+
+                                        setSelectedFarmerForPermission(
+                                            null
+                                        );
+
+                                        setActiveTab(
+                                            'permissions'
+                                        );
+
+                                    }}
                                 >
+
                                     🔐
+
                                     <span>
                                         Manage Access
                                     </span>
+
                                 </button>
+
+
+                                {/* SCHEMES */}
 
                                 <button
                                     onClick={() =>
-                                        setActiveTab('schemes')
+                                        setActiveTab(
+                                            'schemes'
+                                        )
                                     }
                                 >
+
                                     🏛️
+
                                     <span>
                                         Government Schemes
                                     </span>
+
                                 </button>
+
+
+                                {/* NOTIFICATIONS */}
 
                                 <button
                                     onClick={() =>
-                                        setActiveTab('notifications')
+                                        setActiveTab(
+                                            'notifications'
+                                        )
                                     }
                                 >
+
                                     📢
+
                                     <span>
                                         Send Notification
                                     </span>
+
                                 </button>
+
+
+                                {/* ANALYTICS */}
+
+                                <button
+                                    onClick={() =>
+                                        setActiveTab(
+                                            'analytics'
+                                        )
+                                    }
+                                >
+
+                                    📊
+
+                                    <span>
+                                        System Analytics
+                                    </span>
+
+                                </button>
+
 
                             </div>
 
                         </div>
 
+
                     </div>
+
                 );
+
         }
+
     };
+
+
+    // =====================================================
+    // MAIN ADMIN UI
+    // =====================================================
 
     return (
 
         <div className="admin-layout">
 
-            {/* SIDEBAR */}
+
+            {/* =================================================
+                SIDEBAR
+            ================================================= */}
 
             <aside className="admin-sidebar">
+
+
+                {/* LOGO */}
 
                 <div className="admin-logo">
 
@@ -220,130 +772,220 @@ function AdminDashboard() {
 
                 </div>
 
+
+                {/* MENU */}
+
                 <nav className="admin-menu">
 
+
+                    {/* DASHBOARD */}
+
                     <button
                         className={
-                            activeTab === 'dashboard'
+                            activeTab ===
+                            'dashboard'
                                 ? 'admin-menu-active'
                                 : ''
                         }
                         onClick={() =>
-                            setActiveTab('dashboard')
+                            setActiveTab(
+                                'dashboard'
+                            )
                         }
                     >
+
                         🏠 Dashboard
+
                     </button>
+
+
+                    {/* FARMERS */}
 
                     <button
                         className={
-                            activeTab === 'farmers'
+                            activeTab ===
+                            'farmers'
                                 ? 'admin-menu-active'
                                 : ''
                         }
                         onClick={() =>
-                            setActiveTab('farmers')
+                            setActiveTab(
+                                'farmers'
+                            )
                         }
                     >
+
                         👨‍🌾 Farmer Management
+
                     </button>
+
+
+                    {/* PERMISSIONS */}
 
                     <button
                         className={
-                            activeTab === 'permissions'
+                            activeTab ===
+                            'permissions'
                                 ? 'admin-menu-active'
                                 : ''
                         }
-                        onClick={() =>
-                            setActiveTab('permissions')
-                        }
+                        onClick={() => {
+
+                            setSelectedFarmerForPermission(
+                                null
+                            );
+
+                            setActiveTab(
+                                'permissions'
+                            );
+
+                        }}
                     >
+
                         🔐 Access Management
+
                     </button>
+
+
+                    {/* GOVERNMENT SCHEMES */}
 
                     <button
                         className={
-                            activeTab === 'schemes'
+                            activeTab ===
+                            'schemes'
                                 ? 'admin-menu-active'
                                 : ''
                         }
                         onClick={() =>
-                            setActiveTab('schemes')
+                            setActiveTab(
+                                'schemes'
+                            )
                         }
                     >
+
                         🏛️ Government Schemes
+
                     </button>
+
+
+                    {/* NOTIFICATIONS */}
 
                     <button
                         className={
-                            activeTab === 'notifications'
+                            activeTab ===
+                            'notifications'
                                 ? 'admin-menu-active'
                                 : ''
                         }
                         onClick={() =>
-                            setActiveTab('notifications')
+                            setActiveTab(
+                                'notifications'
+                            )
                         }
                     >
+
                         📢 Notifications
+
                     </button>
+
+
+                    {/* OCR MONITORING */}
 
                     <button
                         className={
-                            activeTab === 'monitoring'
+                            activeTab ===
+                            'monitoring'
                                 ? 'admin-menu-active'
                                 : ''
                         }
                         onClick={() =>
-                            setActiveTab('monitoring')
+                            setActiveTab(
+                                'monitoring'
+                            )
                         }
                     >
+
                         🧾 OCR Monitoring
+
                     </button>
+
+
+                    {/* SYSTEM ANALYTICS */}
 
                     <button
                         className={
-                            activeTab === 'analytics'
+                            activeTab ===
+                            'analytics'
                                 ? 'admin-menu-active'
                                 : ''
                         }
                         onClick={() =>
-                            setActiveTab('analytics')
+                            setActiveTab(
+                                'analytics'
+                            )
                         }
                     >
+
                         📊 System Analytics
+
                     </button>
+
 
                 </nav>
 
+
+                {/* LOGOUT */}
+
                 <button
                     className="admin-logout"
-                    onClick={handleLogout}
+                    onClick={
+                        handleLogout
+                    }
                 >
+
                     🚪 Logout
+
                 </button>
+
 
             </aside>
 
 
-            {/* MAIN CONTENT */}
+            {/* =================================================
+                MAIN CONTENT
+            ================================================= */}
 
             <main className="admin-main">
+
+
+                {/* TOP BAR */}
 
                 <header className="admin-topbar">
 
                     <div>
-                        <h2>Krishi-Dhan</h2>
+
+                        <h2>
+                            Krishi-Dhan
+                        </h2>
 
                         <span>
                             Admin Control Panel
                         </span>
+
                     </div>
 
+
                     <div className="admin-profile">
-                        👨‍💼 {user.fullName}
+
+                        👨‍💼{' '}
+                        {user.fullName}
+
                     </div>
 
                 </header>
+
+
+                {/* CONTENT */}
 
                 <section className="admin-content">
 
@@ -351,10 +993,15 @@ function AdminDashboard() {
 
                 </section>
 
+
             </main>
 
+
         </div>
+
     );
+
 }
+
 
 export default AdminDashboard;
