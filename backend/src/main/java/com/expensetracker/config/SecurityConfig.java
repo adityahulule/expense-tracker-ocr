@@ -2,6 +2,7 @@ package com.expensetracker.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -14,52 +15,90 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http) throws Exception {
 
         http
             .csrf(csrf -> csrf.disable())
 
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors ->
+                cors.configurationSource(
+                    corsConfigurationSource()
+                )
+            )
 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/error").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/expenses/**").permitAll()
-                .requestMatchers("/api/reminders/**").permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+
+                .requestMatchers(
+                    "/",
+                    "/error"
+                ).permitAll()
+
+                .requestMatchers(
+                    "/api/auth/**"
+                ).permitAll()
+
+                .requestMatchers(
+                    "/api/expenses/**"
+                ).permitAll()
+
+                .requestMatchers(
+                    "/api/reminders/**"
+                ).permitAll()
+
+                .requestMatchers(
+                    "/api/admin/**"
+                ).permitAll()
+
+                .requestMatchers(
+                    HttpMethod.OPTIONS,
+                    "/**"
+                ).permitAll()
+
                 .anyRequest().authenticated()
             );
 
         return http.build();
     }
 
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration configuration =
+                new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000",
-            "https://expense-tracker-frontend-rqn7.onrender.com"
-        ));
+        configuration.setAllowedOrigins(
+            Arrays.asList(
+                "http://localhost:3000",
+                "https://expense-tracker-frontend-rqn7.onrender.com"
+            )
+        );
 
-        configuration.setAllowedMethods(Arrays.asList(
-            "GET",
-            "POST",
-            "PUT",
-            "DELETE",
-            "PATCH",
-            "OPTIONS"
-        ));
+        configuration.setAllowedMethods(
+            Arrays.asList(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH",
+                "OPTIONS"
+            )
+        );
 
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(
+            Arrays.asList("*")
+        );
 
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
-            new UrlBasedCorsConfigurationSource();
+                new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration(
+            "/**",
+            configuration
+        );
 
         return source;
     }

@@ -18,6 +18,7 @@ import EmptyState from './components/EmptyState';
 import InsightCards from './components/InsightCards';
 import CategoryGrid from './components/CategoryGrid';
 import ReminderPage from './components/Reminder/ReminderPage';
+import AdminDashboard from './components/admin/AdminDashboard';
 
 // Authentication
 import Login from './components/auth/Login';
@@ -25,6 +26,7 @@ import Register from './components/auth/Register';
 
 // Services
 import { getExpenses } from './services/expenseService';
+import { getUserPermissions } from './services/permissionService';
 
 // Toast
 import { ToastContainer } from 'react-toastify';
@@ -32,7 +34,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 /* =========================================================
-   DASHBOARD
+   FARMER DASHBOARD
 ========================================================= */
 
 function DashboardContent() {
@@ -41,9 +43,14 @@ function DashboardContent() {
   const [activeTab, setActiveTab] = useState('list');
   const [selectedCategory, setSelectedCategory] = useState('');
 
-  /* -------------------------------------------------------
-     GET USER
-  ------------------------------------------------------- */
+  // Farmer permissions
+  const [permissions, setPermissions] = useState(null);
+  const [permissionLoading, setPermissionLoading] = useState(true);
+
+
+  /* =========================================================
+     GET CURRENT USER
+  ========================================================= */
 
   const userData = localStorage.getItem('user');
 
@@ -57,28 +64,35 @@ function DashboardContent() {
   const isAdmin = user.role === 'ADMIN';
 
 
-  /* -------------------------------------------------------
+  /* =========================================================
      LOAD EXPENSES
-  ------------------------------------------------------- */
+  ========================================================= */
 
   const loadData = async () => {
 
     try {
 
-      const storedUser = localStorage.getItem('user');
+      const storedUser =
+        localStorage.getItem('user');
 
       if (!storedUser) {
         return;
       }
 
-      const currentUser = JSON.parse(storedUser);
+      const currentUser =
+        JSON.parse(storedUser);
 
       if (!currentUser.id) {
-        console.error('User ID not found.');
+
+        console.error(
+          'User ID not found.'
+        );
+
         return;
       }
 
-      const data = await getExpenses(currentUser.id);
+      const data =
+        await getExpenses(currentUser.id);
 
       setExpenses(data || []);
 
@@ -90,34 +104,113 @@ function DashboardContent() {
       );
 
       setExpenses([]);
+    }
+  };
+
+
+  /* =========================================================
+     LOAD FARMER PERMISSIONS
+  ========================================================= */
+
+  const loadPermissions = async () => {
+
+    try {
+
+      // Admin doesn't need farmer permissions
+      if (isAdmin) {
+
+        setPermissionLoading(false);
+
+        return;
+      }
+
+      const storedUser =
+        localStorage.getItem('user');
+
+      if (!storedUser) {
+
+        setPermissionLoading(false);
+
+        return;
+      }
+
+      const currentUser =
+        JSON.parse(storedUser);
+
+      if (!currentUser.id) {
+
+        console.error(
+          'User ID not found.'
+        );
+
+        setPermissionLoading(false);
+
+        return;
+      }
+
+      const data =
+        await getUserPermissions(
+          currentUser.id
+        );
+
+      setPermissions(data);
+
+    } catch (error) {
+
+      console.error(
+        'Error loading permissions:',
+        error
+      );
+
+      /*
+       * If permissions cannot be loaded,
+       * don't give unrestricted access.
+       */
+      setPermissions({
+        expenseAccess: false,
+        ocrAccess: false,
+        reminderAccess: false,
+        cropManagementAccess: false,
+        analyticsAccess: false,
+        schemeAccess: false
+      });
+
+    } finally {
+
+      setPermissionLoading(false);
 
     }
   };
 
 
-  /* -------------------------------------------------------
+  /* =========================================================
      LOAD DATA WHEN DASHBOARD OPENS
-  ------------------------------------------------------- */
+  ========================================================= */
 
   useEffect(() => {
+
     loadData();
+    loadPermissions();
+
   }, []);
 
 
-  /* -------------------------------------------------------
+  /* =========================================================
      TOTAL EXPENSE
-  ------------------------------------------------------- */
+  ========================================================= */
 
   const total = expenses.reduce(
     (sum, expense) =>
-      sum + parseFloat(expense.amount || 0),
+      sum + parseFloat(
+        expense.amount || 0
+      ),
     0
   );
 
 
-  /* -------------------------------------------------------
+  /* =========================================================
      LOGOUT
-  ------------------------------------------------------- */
+  ========================================================= */
 
   const handleLogout = () => {
 
@@ -128,9 +221,9 @@ function DashboardContent() {
   };
 
 
-  /* -------------------------------------------------------
+  /* =========================================================
      CHANGE TAB
-  ------------------------------------------------------- */
+  ========================================================= */
 
   const handleTabChange = (tab) => {
 
@@ -139,9 +232,64 @@ function DashboardContent() {
   };
 
 
-  /* =======================================================
+  /* =========================================================
+     PERMISSION LOADING
+  ========================================================= */
+
+  if (
+    !isAdmin &&
+    permissionLoading
+  ) {
+
+    return (
+
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: '#f0fdf4'
+        }}
+      >
+
+        <div
+          style={{
+            textAlign: 'center'
+          }}
+        >
+
+          <div
+            style={{
+              fontSize: '45px'
+            }}
+          >
+            🌾
+          </div>
+
+          <h2
+            style={{
+              color: '#14532d'
+            }}
+          >
+            Loading Krishi-Dhan...
+          </h2>
+
+          <p>
+            Checking your feature access...
+          </p>
+
+        </div>
+
+      </div>
+
+    );
+  }
+
+
+  /* =========================================================
      UI
-  ======================================================= */
+  ========================================================= */
 
   return (
 
@@ -176,39 +324,77 @@ function DashboardContent() {
         </button>
 
 
-        {/* ADD INVESTMENT */}
+        {/* =================================================
+            EXPENSE ACCESS
+        ================================================= */}
 
-        <button
-          className={
-            activeTab === 'add'
-              ? 'active'
-              : ''
-          }
-          onClick={() =>
-            handleTabChange('add')
-          }
-        >
-          🌱 Add Investment
-        </button>
+        {permissions?.expenseAccess !== false && (
 
+          <button
+            className={
+              activeTab === 'add'
+                ? 'active'
+                : ''
+            }
+            onClick={() =>
+              handleTabChange('add')
+            }
+          >
+            🌱 Add Investment
+          </button>
 
-        {/* REMINDERS */}
-
-        <button
-          className={
-            activeTab === 'reminders'
-              ? 'active'
-              : ''
-          }
-          onClick={() =>
-            handleTabChange('reminders')
-          }
-        >
-          🔔 Reminders
-        </button>
+        )}
 
 
-        {/* ADMIN ANALYTICS */}
+        {/* =================================================
+            REMINDER ACCESS
+        ================================================= */}
+
+        {permissions?.reminderAccess !== false && (
+
+          <button
+            className={
+              activeTab === 'reminders'
+                ? 'active'
+                : ''
+            }
+            onClick={() =>
+              handleTabChange('reminders')
+            }
+          >
+            🔔 Reminders
+          </button>
+
+        )}
+
+
+        {/* =================================================
+            FARMER ANALYTICS
+        ================================================= */}
+
+        {permissions?.analyticsAccess !== false && (
+
+          <button
+            className={
+              activeTab === 'farmerAnalytics'
+                ? 'active'
+                : ''
+            }
+            onClick={() =>
+              handleTabChange(
+                'farmerAnalytics'
+              )
+            }
+          >
+            📈 My Analytics
+          </button>
+
+        )}
+
+
+        {/* =================================================
+            ADMIN ANALYTICS
+        ================================================= */}
 
         {isAdmin && (
 
@@ -219,7 +405,9 @@ function DashboardContent() {
                 : ''
             }
             onClick={() =>
-              handleTabChange('analytics')
+              handleTabChange(
+                'analytics'
+              )
             }
           >
             📈 Admin Analytics
@@ -228,7 +416,9 @@ function DashboardContent() {
         )}
 
 
-        {/* LOGOUT */}
+        {/* =================================================
+            LOGOUT
+        ================================================= */}
 
         <button
           className="logout-btn"
@@ -281,9 +471,13 @@ function DashboardContent() {
             </div>
 
             <div className="profile-chip">
+
               {user.fullName
-                ? user.fullName.charAt(0).toUpperCase()
+                ? user.fullName
+                    .charAt(0)
+                    .toUpperCase()
                 : 'F'}
+
             </div>
 
           </div>
@@ -298,6 +492,7 @@ function DashboardContent() {
         {activeTab === 'list' && (
 
           <>
+
             <HeroSection
               totalAmount={total}
             />
@@ -305,6 +500,7 @@ function DashboardContent() {
             <InsightCards
               expenses={expenses}
             />
+
           </>
 
         )}
@@ -347,36 +543,54 @@ function DashboardContent() {
 
           {activeTab === 'add' && (
 
-            <div className="add-investment-area">
+            permissions?.expenseAccess !== false ? (
 
-              <CategoryGrid
-                onSelect={(category) =>
-                  setSelectedCategory(category)
-                }
-              />
+              <div className="add-investment-area">
 
-
-              <div className="form-split">
-
-                <ExpenseForm
-                  initialCategory={
-                    selectedCategory
-                  }
-                  onExpenseAdded={
-                    loadData
+                <CategoryGrid
+                  onSelect={(category) =>
+                    setSelectedCategory(category)
                   }
                 />
 
 
-                <ReceiptUpload
-                  onUploadSuccess={
-                    loadData
-                  }
-                />
+                <div className="form-split">
+
+                  {/* Expense Form */}
+
+                  <ExpenseForm
+                    initialCategory={
+                      selectedCategory
+                    }
+                    onExpenseAdded={
+                      loadData
+                    }
+                  />
+
+
+                  {/* OCR */}
+
+                  {permissions?.ocrAccess !== false && (
+
+                    <ReceiptUpload
+                      onUploadSuccess={
+                        loadData
+                      }
+                    />
+
+                  )}
+
+                </div>
 
               </div>
 
-            </div>
+            ) : (
+
+              <AccessDenied
+                feature="Expense Tracking"
+              />
+
+            )
 
           )}
 
@@ -387,7 +601,40 @@ function DashboardContent() {
 
           {activeTab === 'reminders' && (
 
-            <ReminderPage />
+            permissions?.reminderAccess !== false ? (
+
+              <ReminderPage />
+
+            ) : (
+
+              <AccessDenied
+                feature="Reminders"
+              />
+
+            )
+
+          )}
+
+
+          {/* =================================================
+              FARMER ANALYTICS
+          ================================================= */}
+
+          {activeTab === 'farmerAnalytics' && (
+
+            permissions?.analyticsAccess !== false ? (
+
+              <ExpenseSummary
+                expenses={expenses}
+              />
+
+            ) : (
+
+              <AccessDenied
+                feature="Expense Analytics"
+              />
+
+            )
 
           )}
 
@@ -396,7 +643,7 @@ function DashboardContent() {
               ADMIN ANALYTICS
           ================================================= */}
 
-          {activeTab === 'analytics' && (
+          {activeTab === 'analytics' && isAdmin && (
 
             <ExpenseSummary
               expenses={expenses}
@@ -415,6 +662,68 @@ function DashboardContent() {
 
 
 /* =========================================================
+   ACCESS DENIED COMPONENT
+========================================================= */
+
+function AccessDenied({ feature }) {
+
+  return (
+
+    <div
+      style={{
+        background: 'white',
+        borderRadius: '15px',
+        padding: '60px 30px',
+        textAlign: 'center',
+        boxShadow:
+          '0 4px 15px rgba(0,0,0,0.05)',
+        marginTop: '20px'
+      }}
+    >
+
+      <div
+        style={{
+          fontSize: '55px',
+          marginBottom: '15px'
+        }}
+      >
+        🔒
+      </div>
+
+      <h2
+        style={{
+          color: '#14532d'
+        }}
+      >
+        Access Restricted
+      </h2>
+
+      <p
+        style={{
+          color: '#64748b'
+        }}
+      >
+        You don't currently have access
+        to <strong>{feature}</strong>.
+      </p>
+
+      <p
+        style={{
+          color: '#94a3b8',
+          fontSize: '13px'
+        }}
+      >
+        Please contact the administrator
+        if you need access.
+      </p>
+
+    </div>
+
+  );
+}
+
+
+/* =========================================================
    MAIN APP
 ========================================================= */
 
@@ -425,17 +734,43 @@ function App() {
   );
 
 
-  /* -------------------------------------------------------
+  const [user, setUser] = useState(() => {
+
+    const storedUser =
+      localStorage.getItem('user');
+
+    return storedUser
+      ? JSON.parse(storedUser)
+      : null;
+
+  });
+
+
+  /* =======================================================
      AUTHENTICATION STATE
-  ------------------------------------------------------- */
+  ======================================================= */
 
   useEffect(() => {
 
     const handleStorage = () => {
 
-      setIsAuth(
-        !!localStorage.getItem('user')
-      );
+      const storedUser =
+        localStorage.getItem('user');
+
+      if (storedUser) {
+
+        setUser(
+          JSON.parse(storedUser)
+        );
+
+        setIsAuth(true);
+
+      } else {
+
+        setUser(null);
+        setIsAuth(false);
+
+      }
 
     };
 
@@ -459,8 +794,23 @@ function App() {
 
 
   /* =======================================================
-     ROUTES
+     DEFAULT PAGE AFTER LOGIN
   ======================================================= */
+
+  const getHomeRoute = () => {
+
+    if (!user) {
+      return '/login';
+    }
+
+    if (user.role === 'ADMIN') {
+      return '/admin';
+    }
+
+    return '/dashboard';
+
+  };
+
 
   return (
 
@@ -469,58 +819,132 @@ function App() {
       <Routes>
 
 
-        {/* LOGIN */}
+        {/* =================================================
+            LOGIN
+        ================================================= */}
 
         <Route
           path="/login"
           element={
             isAuth
-              ? <Navigate to="/dashboard" />
+              ? (
+                <Navigate
+                  to={getHomeRoute()}
+                  replace
+                />
+              )
               : <Login />
           }
         />
 
 
-        {/* REGISTER */}
+        {/* =================================================
+            REGISTER
+        ================================================= */}
 
         <Route
           path="/register"
           element={
             isAuth
-              ? <Navigate to="/dashboard" />
+              ? (
+                <Navigate
+                  to={getHomeRoute()}
+                  replace
+                />
+              )
               : <Register />
           }
         />
 
 
-        {/* DASHBOARD */}
+        {/* =================================================
+            FARMER DASHBOARD
+        ================================================= */}
 
         <Route
           path="/dashboard"
           element={
-            isAuth
+            isAuth &&
+            user?.role !== 'ADMIN'
+
               ? <DashboardContent />
-              : <Navigate to="/login" />
+
+              : isAuth
+
+                ? (
+                  <Navigate
+                    to="/admin"
+                    replace
+                  />
+                )
+
+                : (
+                  <Navigate
+                    to="/login"
+                    replace
+                  />
+                )
           }
         />
 
 
-        {/* DEFAULT */}
+        {/* =================================================
+            ADMIN DASHBOARD
+        ================================================= */}
+
+        <Route
+          path="/admin"
+          element={
+            isAuth &&
+            user?.role === 'ADMIN'
+
+              ? <AdminDashboard />
+
+              : isAuth
+
+                ? (
+                  <Navigate
+                    to="/dashboard"
+                    replace
+                  />
+                )
+
+                : (
+                  <Navigate
+                    to="/login"
+                    replace
+                  />
+                )
+          }
+        />
+
+
+        {/* =================================================
+            DEFAULT
+        ================================================= */}
 
         <Route
           path="/"
           element={
-            <Navigate to="/login" />
+            <Navigate
+              to={getHomeRoute()}
+              replace
+            />
           }
         />
 
 
-        {/* INVALID URL */}
+        {/* =================================================
+            INVALID URL
+        ================================================= */}
 
         <Route
           path="*"
           element={
-            <Navigate to="/login" />
+            <Navigate
+              to={getHomeRoute()}
+              replace
+            />
           }
         />
 
