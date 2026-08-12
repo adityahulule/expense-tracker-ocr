@@ -408,7 +408,7 @@ function DashboardContent() {
               )
             }
           >
-            🌾 Crop Management
+            🌾 {t('cropManagement')}
           </button>
 
         )}
@@ -697,21 +697,21 @@ function DashboardContent() {
               CROP MANAGEMENT
           ================================================= */}
 
-          {activeTab === 'cropManagement' && (
+{activeTab === 'cropManagement' && (
 
-            permissions?.cropManagementAccess !== false ? (
+  permissions?.cropManagementAccess !== false ? (
 
-              <CropManagement />
+    <CropManagement />
 
-            ) : (
+  ) : (
 
-              <AccessDenied
-                feature="Crop Management"
-              />
+    <AccessDenied
+      feature={t('cropManagement')}
+    />
 
-            )
+  )
 
-          )}
+)}
 
 
           {/* =================================================
