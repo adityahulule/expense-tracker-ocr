@@ -85,6 +85,15 @@ public class SecurityConfig {
 
 
                 // =========================
+                // CROPS
+                // =========================
+
+                .requestMatchers(
+                    "/api/crops/**"
+                ).permitAll()
+
+
+                // =========================
                 // ADMIN
                 // =========================
 
