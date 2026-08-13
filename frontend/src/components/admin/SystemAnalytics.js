@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import {
   BarChart,
   Bar,
@@ -13,6 +14,8 @@ import {
   Legend
 } from 'recharts';
 
+import axios from 'axios';
+
 import './SystemAnalytics.css';
 
 
@@ -23,21 +26,87 @@ function SystemAnalytics({
 }) {
 
   // =====================================================
+  // FARMERS DATA
+  // =====================================================
+
+  const [loadedFarmers, setLoadedFarmers] =
+    useState(farmers);
+
+
+  // =====================================================
+  // LOAD FARMERS
+  // =====================================================
+
+  useEffect(() => {
+
+    const loadFarmers = async () => {
+
+      try {
+
+        const API_URL =
+          process.env.REACT_APP_API_URL ||
+          'https://expense-tracker-ocr-6.onrender.com';
+
+
+        const response = await axios.get(
+          `${API_URL}/api/users/farmers`
+        );
+
+
+        setLoadedFarmers(
+          Array.isArray(response.data)
+            ? response.data
+            : []
+        );
+
+      } catch (error) {
+
+        console.error(
+          'Error loading farmers for analytics:',
+          error
+        );
+
+
+        // Use farmers received from parent
+        // if API request fails
+
+        setLoadedFarmers(
+          Array.isArray(farmers)
+            ? farmers
+            : []
+        );
+      }
+
+    };
+
+
+    loadFarmers();
+
+  }, [farmers]);
+
+
+  // =====================================================
   // BASIC SYSTEM STATISTICS
   // =====================================================
 
-  const totalFarmers = farmers.length;
+  const totalFarmers =
+    loadedFarmers.length;
 
-  const totalExpenses = expenses.length;
+
+  const totalExpenses =
+    expenses.length;
+
 
   const totalNotifications =
     notifications.length;
 
-  const totalInvestment = expenses.reduce(
-    (sum, expense) =>
-      sum + Number(expense.amount || 0),
-    0
-  );
+
+  const totalInvestment =
+    expenses.reduce(
+      (sum, expense) =>
+        sum + Number(expense.amount || 0),
+      0
+    );
 
 
   // =====================================================
@@ -48,10 +117,12 @@ function SystemAnalytics({
 
     const totals = {};
 
+
     expenses.forEach((expense) => {
 
       const category =
         expense.category || 'Other';
+
 
       totals[category] =
         (totals[category] || 0) +
@@ -59,13 +130,17 @@ function SystemAnalytics({
 
     });
 
+
     return Object.entries(totals)
+
       .map(([name, value]) => ({
         name,
         value
       }))
+
       .sort(
-        (a, b) => b.value - a.value
+        (a, b) =>
+          b.value - a.value
       );
 
   }, [expenses]);
@@ -79,11 +154,13 @@ function SystemAnalytics({
 
     const totals = {};
 
+
     expenses.forEach((expense) => {
 
       const crop =
         expense.cropType ||
         'General Farm';
+
 
       totals[crop] =
         (totals[crop] || 0) +
@@ -91,13 +168,17 @@ function SystemAnalytics({
 
     });
 
+
     return Object.entries(totals)
+
       .map(([name, value]) => ({
         name,
         value
       }))
+
       .sort(
-        (a, b) => b.value - a.value
+        (a, b) =>
+          b.value - a.value
       );
 
   }, [expenses]);
@@ -123,6 +204,7 @@ function SystemAnalytics({
       'Nov',
       'Dec'
     ];
+
 
     const totals =
       months.map((month) => ({
@@ -173,11 +255,13 @@ function SystemAnalytics({
 
     const totals = {};
 
+
     expenses.forEach((expense) => {
 
       const season =
         expense.season ||
         'Other';
+
 
       totals[season] =
         (totals[season] || 0) +
@@ -187,6 +271,7 @@ function SystemAnalytics({
 
 
     return Object.entries(totals)
+
       .map(([name, value]) => ({
         name,
         value
@@ -275,6 +360,7 @@ function SystemAnalytics({
             👨‍🌾
           </div>
 
+
           <div>
 
             <span>
@@ -297,6 +383,7 @@ function SystemAnalytics({
           <div className="analytics-icon">
             💰
           </div>
+
 
           <div>
 
@@ -323,6 +410,7 @@ function SystemAnalytics({
             📄
           </div>
 
+
           <div>
 
             <span>
@@ -345,6 +433,7 @@ function SystemAnalytics({
           <div className="analytics-icon">
             🔔
           </div>
+
 
           <div>
 
@@ -398,9 +487,11 @@ function SystemAnalytics({
                 vertical={false}
               />
 
+
               <XAxis
                 dataKey="month"
               />
+
 
               <YAxis
                 tickFormatter={(value) =>
@@ -408,11 +499,13 @@ function SystemAnalytics({
                 }
               />
 
+
               <Tooltip
                 formatter={(value) =>
                   formatCurrency(value)
                 }
               />
+
 
               <Bar
                 dataKey="amount"
@@ -503,11 +596,13 @@ function SystemAnalytics({
 
                   </Pie>
 
+
                   <Tooltip
                     formatter={(value) =>
                       formatCurrency(value)
                     }
                   />
+
 
                   <Legend />
 
@@ -562,6 +657,7 @@ function SystemAnalytics({
                     horizontal={false}
                   />
 
+
                   <XAxis
                     type="number"
                     tickFormatter={(value) =>
@@ -569,17 +665,20 @@ function SystemAnalytics({
                     }
                   />
 
+
                   <YAxis
                     type="category"
                     dataKey="name"
                     width={100}
                   />
 
+
                   <Tooltip
                     formatter={(value) =>
                       formatCurrency(value)
                     }
                   />
+
 
                   <Bar
                     dataKey="value"
@@ -647,6 +746,7 @@ function SystemAnalytics({
                     </strong>
 
                   </div>
+
 
                   <span>
                     {formatCurrency(
