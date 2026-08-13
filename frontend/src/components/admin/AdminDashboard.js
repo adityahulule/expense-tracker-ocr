@@ -7,8 +7,6 @@ import NotificationManagement from './NotificationManagement';
 import Monitoring from './Monitoring';
 import SystemAnalytics from './SystemAnalytics';
 
-import { getAdminDashboardStats } from '../../services/adminService';
-
 import './Admin.css';
 
 
@@ -41,23 +39,35 @@ function AdminDashboard() {
     const [notifications, setNotifications] =
         useState([]);
 
-    const [analyticsLoading, setAnalyticsLoading] =
-        useState(false);
-
 
     // =====================================================
     // DASHBOARD STATISTICS
     // =====================================================
 
-    const [stats, setStats] = useState({
-        totalFarmers: 0,
-        totalCrops: 0,
-        expenseRecords: 0,
-        activeReminders: 0
-    });
+    const [dashboardStats, setDashboardStats] =
+        useState({
+            totalFarmers: 0,
+            totalCrops: 0,
+            expenseRecords: 0,
+            activeReminders: 0
+        });
 
-    const [statsLoading, setStatsLoading] =
-        useState(true);
+
+    // =====================================================
+    // LOADING
+    // =====================================================
+
+    const [analyticsLoading, setAnalyticsLoading] =
+        useState(false);
+
+
+    // =====================================================
+    // API URL
+    // =====================================================
+
+    const API_URL =
+        process.env.REACT_APP_API_URL ||
+        'https://expense-tracker-ocr-6.onrender.com';
 
 
     // =====================================================
@@ -76,76 +86,94 @@ function AdminDashboard() {
 
 
     // =====================================================
-    // LOAD DASHBOARD STATISTICS
+    // LOAD ALL ADMIN DATA
     // =====================================================
 
-    const loadDashboardStats = async () => {
+    useEffect(() => {
 
-        try {
+        loadAdminData();
 
-            setStatsLoading(true);
-
-            const data =
-                await getAdminDashboardStats();
-
-            console.log(
-                'Admin Dashboard Stats:',
-                data
-            );
+    }, []);
 
 
-            setStats({
-
-                totalFarmers:
-                    Number(data?.totalFarmers || 0),
-
-                totalCrops:
-                    Number(data?.totalCrops || 0),
-
-                expenseRecords:
-                    Number(data?.expenseRecords || 0),
-
-                activeReminders:
-                    Number(data?.activeReminders || 0)
-
-            });
-
-        } catch (error) {
-
-            console.error(
-                'Dashboard statistics error:',
-                error
-            );
-
-        } finally {
-
-            setStatsLoading(false);
-
-        }
-
-    };
-
-
-    // =====================================================
-    // LOAD ANALYTICS DATA
-    // =====================================================
-
-    const loadAnalyticsData = async () => {
+    const loadAdminData = async () => {
 
         try {
 
             setAnalyticsLoading(true);
 
 
-            // =============================================
-            // FARMERS
-            // =============================================
+            // =================================================
+            // 1. DASHBOARD STATISTICS
+            // =================================================
+
+            try {
+
+                const statsResponse =
+                    await fetch(
+                        `${API_URL}/api/admin/dashboard-stats`
+                    );
+
+
+                if (statsResponse.ok) {
+
+                    const statsData =
+                        await statsResponse.json();
+
+
+                    console.log(
+                        'Admin Dashboard Stats:',
+                        statsData
+                    );
+
+
+                    setDashboardStats({
+                        totalFarmers:
+                            Number(
+                                statsData.totalFarmers || 0
+                            ),
+
+                        totalCrops:
+                            Number(
+                                statsData.totalCrops || 0
+                            ),
+
+                        expenseRecords:
+                            Number(
+                                statsData.expenseRecords || 0
+                            ),
+
+                        activeReminders:
+                            Number(
+                                statsData.activeReminders || 0
+                            )
+                    });
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    'Dashboard statistics error:',
+                    error
+                );
+
+            }
+
+
+            // =================================================
+            // 2. FARMERS
+            // =================================================
+            // IMPORTANT:
+            // DO NOT USE /api/users/farmers
+            // Correct endpoint is /api/admin/farmers
+            // =================================================
 
             try {
 
                 const farmerResponse =
                     await fetch(
-                        'https://expense-tracker-ocr-6.onrender.com/api/users/farmers'
+                        `${API_URL}/api/admin/farmers`
                     );
 
 
@@ -154,10 +182,18 @@ function AdminDashboard() {
                     const farmerData =
                         await farmerResponse.json();
 
+
                     setFarmers(
                         Array.isArray(farmerData)
                             ? farmerData
                             : []
+                    );
+
+                } else {
+
+                    console.error(
+                        'Unable to load farmers:',
+                        farmerResponse.status
                     );
 
                 }
@@ -172,15 +208,15 @@ function AdminDashboard() {
             }
 
 
-            // =============================================
-            // EXPENSES
-            // =============================================
+            // =================================================
+            // 3. EXPENSES
+            // =================================================
 
             try {
 
                 const expenseResponse =
                     await fetch(
-                        'https://expense-tracker-ocr-6.onrender.com/api/expenses'
+                        `${API_URL}/api/expenses`
                     );
 
 
@@ -188,6 +224,7 @@ function AdminDashboard() {
 
                     const expenseData =
                         await expenseResponse.json();
+
 
                     setExpenses(
                         Array.isArray(expenseData)
@@ -207,15 +244,15 @@ function AdminDashboard() {
             }
 
 
-            // =============================================
-            // NOTIFICATIONS
-            // =============================================
+            // =================================================
+            // 4. NOTIFICATIONS
+            // =================================================
 
             try {
 
                 const notificationResponse =
                     await fetch(
-                        'https://expense-tracker-ocr-6.onrender.com/api/notifications'
+                        `${API_URL}/api/notifications`
                     );
 
 
@@ -223,6 +260,7 @@ function AdminDashboard() {
 
                     const notificationData =
                         await notificationResponse.json();
+
 
                     setNotifications(
                         Array.isArray(notificationData)
@@ -241,10 +279,11 @@ function AdminDashboard() {
 
             }
 
+
         } catch (error) {
 
             console.error(
-                'Analytics loading error:',
+                'Admin data loading error:',
                 error
             );
 
@@ -258,21 +297,6 @@ function AdminDashboard() {
 
 
     // =====================================================
-    // INITIAL LOAD
-    // =====================================================
-
-    useEffect(() => {
-
-        // Dashboard cards
-        loadDashboardStats();
-
-        // Analytics data
-        loadAnalyticsData();
-
-    }, []);
-
-
-    // =====================================================
     // LOGOUT
     // =====================================================
 
@@ -280,7 +304,8 @@ function AdminDashboard() {
 
         localStorage.removeItem('user');
 
-        window.location.href = '/login';
+        window.location.href =
+            '/login';
 
     };
 
@@ -289,7 +314,9 @@ function AdminDashboard() {
     // OPEN PERMISSION MANAGEMENT
     // =====================================================
 
-    const handleManagePermissions = (farmerId) => {
+    const handleManagePermissions = (
+        farmerId
+    ) => {
 
         setSelectedFarmerForPermission(
             farmerId
@@ -318,13 +345,11 @@ function AdminDashboard() {
             case 'farmers':
 
                 return (
-
                     <FarmerManagement
                         onManagePermissions={
                             handleManagePermissions
                         }
                     />
-
                 );
 
 
@@ -335,13 +360,11 @@ function AdminDashboard() {
             case 'permissions':
 
                 return (
-
                     <PermissionManagement
                         selectedFarmer={
                             selectedFarmerForPermission
                         }
                     />
-
                 );
 
 
@@ -352,9 +375,7 @@ function AdminDashboard() {
             case 'schemes':
 
                 return (
-
                     <SchemeManagement />
-
                 );
 
 
@@ -365,9 +386,7 @@ function AdminDashboard() {
             case 'notifications':
 
                 return (
-
                     <NotificationManagement />
-
                 );
 
 
@@ -378,9 +397,7 @@ function AdminDashboard() {
             case 'monitoring':
 
                 return (
-
                     <Monitoring />
-
                 );
 
 
@@ -391,7 +408,6 @@ function AdminDashboard() {
             case 'analytics':
 
                 return (
-
                     <SystemAnalytics
                         farmers={farmers}
                         expenses={expenses}
@@ -399,7 +415,6 @@ function AdminDashboard() {
                             notifications
                         }
                     />
-
                 );
 
 
@@ -446,13 +461,10 @@ function AdminDashboard() {
                                         {
                                             weekday:
                                                 'long',
-
                                             year:
                                                 'numeric',
-
                                             month:
                                                 'long',
-
                                             day:
                                                 'numeric'
                                         }
@@ -481,13 +493,9 @@ function AdminDashboard() {
                                 <div>
 
                                     <h2>
-
                                         {
-                                            statsLoading
-                                                ? '...'
-                                                : stats.totalFarmers
+                                            dashboardStats.totalFarmers
                                         }
-
                                     </h2>
 
                                     <p>
@@ -510,13 +518,9 @@ function AdminDashboard() {
                                 <div>
 
                                     <h2>
-
                                         {
-                                            statsLoading
-                                                ? '...'
-                                                : stats.totalCrops
+                                            dashboardStats.totalCrops
                                         }
-
                                     </h2>
 
                                     <p>
@@ -539,13 +543,9 @@ function AdminDashboard() {
                                 <div>
 
                                     <h2>
-
                                         {
-                                            statsLoading
-                                                ? '...'
-                                                : stats.expenseRecords
+                                            dashboardStats.expenseRecords
                                         }
-
                                     </h2>
 
                                     <p>
@@ -568,13 +568,9 @@ function AdminDashboard() {
                                 <div>
 
                                     <h2>
-
                                         {
-                                            statsLoading
-                                                ? '...'
-                                                : stats.activeReminders
+                                            dashboardStats.activeReminders
                                         }
-
                                     </h2>
 
                                     <p>
@@ -600,14 +596,12 @@ function AdminDashboard() {
                             </h2>
 
                             <p>
-
                                 Manage farmers,
                                 permissions,
                                 government schemes,
                                 notifications and
                                 system activities
                                 from this panel.
-
                             </p>
 
                         </div>
@@ -782,8 +776,7 @@ function AdminDashboard() {
 
                     <button
                         className={
-                            activeTab ===
-                            'dashboard'
+                            activeTab === 'dashboard'
                                 ? 'admin-menu-active'
                                 : ''
                         }
@@ -803,8 +796,7 @@ function AdminDashboard() {
 
                     <button
                         className={
-                            activeTab ===
-                            'farmers'
+                            activeTab === 'farmers'
                                 ? 'admin-menu-active'
                                 : ''
                         }
@@ -824,8 +816,7 @@ function AdminDashboard() {
 
                     <button
                         className={
-                            activeTab ===
-                            'permissions'
+                            activeTab === 'permissions'
                                 ? 'admin-menu-active'
                                 : ''
                         }
@@ -851,8 +842,7 @@ function AdminDashboard() {
 
                     <button
                         className={
-                            activeTab ===
-                            'schemes'
+                            activeTab === 'schemes'
                                 ? 'admin-menu-active'
                                 : ''
                         }
@@ -872,8 +862,7 @@ function AdminDashboard() {
 
                     <button
                         className={
-                            activeTab ===
-                            'notifications'
+                            activeTab === 'notifications'
                                 ? 'admin-menu-active'
                                 : ''
                         }
@@ -893,8 +882,7 @@ function AdminDashboard() {
 
                     <button
                         className={
-                            activeTab ===
-                            'monitoring'
+                            activeTab === 'monitoring'
                                 ? 'admin-menu-active'
                                 : ''
                         }
@@ -914,8 +902,7 @@ function AdminDashboard() {
 
                     <button
                         className={
-                            activeTab ===
-                            'analytics'
+                            activeTab === 'analytics'
                                 ? 'admin-menu-active'
                                 : ''
                         }

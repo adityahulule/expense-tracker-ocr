@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import {
   BarChart,
@@ -14,8 +14,6 @@ import {
   Legend
 } from 'recharts';
 
-import axios from 'axios';
-
 import './SystemAnalytics.css';
 
 
@@ -25,92 +23,40 @@ function SystemAnalytics({
   notifications = []
 }) {
 
-  // =====================================================
-  // TOTAL FARMERS
-  // =====================================================
-
-  const [totalFarmers, setTotalFarmers] = useState(
-    Array.isArray(farmers) ? farmers.length : 0
-  );
-
-
-  // =====================================================
-  // LOAD ADMIN DASHBOARD STATISTICS
-  // =====================================================
-
-  useEffect(() => {
-
-    const loadDashboardStats = async () => {
-
-      try {
-
-        const API_URL =
-          process.env.REACT_APP_API_URL ||
-          'https://expense-tracker-ocr-6.onrender.com';
-
-
-        const response = await axios.get(
-          `${API_URL}/api/admin/dashboard-stats`
-        );
-
-
-        console.log(
-          'System Analytics Stats:',
-          response.data
-        );
-
-
-        setTotalFarmers(
-          Number(
-            response.data?.totalFarmers || 0
-          )
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          'System Analytics Stats Error:',
-          error
-        );
-
-
-        // Fallback to farmers prop
-
-        setTotalFarmers(
-          Array.isArray(farmers)
-            ? farmers.length
-            : 0
-        );
-
-      }
-
-    };
-
-
-    loadDashboardStats();
-
-  }, [farmers]);
-
 
   // =====================================================
   // BASIC SYSTEM STATISTICS
   // =====================================================
 
+  const totalFarmers =
+    Array.isArray(farmers)
+      ? farmers.length
+      : 0;
+
+
   const totalExpenses =
-    expenses.length;
+    Array.isArray(expenses)
+      ? expenses.length
+      : 0;
 
 
   const totalNotifications =
-    notifications.length;
+    Array.isArray(notifications)
+      ? notifications.length
+      : 0;
 
 
   const totalInvestment =
-    expenses.reduce(
-      (sum, expense) =>
-        sum + Number(expense.amount || 0),
-      0
-    );
+    Array.isArray(expenses)
+      ? expenses.reduce(
+          (sum, expense) =>
+            sum +
+            Number(
+              expense.amount || 0
+            ),
+          0
+        )
+      : 0;
 
 
   // =====================================================
@@ -125,21 +71,26 @@ function SystemAnalytics({
     expenses.forEach((expense) => {
 
       const category =
-        expense.category || 'Other';
+        expense.category ||
+        'Other';
 
 
       totals[category] =
         (totals[category] || 0) +
-        Number(expense.amount || 0);
+        Number(
+          expense.amount || 0
+        );
 
     });
 
 
     return Object.entries(totals)
-      .map(([name, value]) => ({
-        name,
-        value
-      }))
+      .map(
+        ([name, value]) => ({
+          name,
+          value
+        })
+      )
       .sort(
         (a, b) =>
           b.value - a.value
@@ -166,16 +117,20 @@ function SystemAnalytics({
 
       totals[crop] =
         (totals[crop] || 0) +
-        Number(expense.amount || 0);
+        Number(
+          expense.amount || 0
+        );
 
     });
 
 
     return Object.entries(totals)
-      .map(([name, value]) => ({
-        name,
-        value
-      }))
+      .map(
+        ([name, value]) => ({
+          name,
+          value
+        })
+      )
       .sort(
         (a, b) =>
           b.value - a.value
@@ -207,10 +162,12 @@ function SystemAnalytics({
 
 
     const totals =
-      months.map((month) => ({
-        month,
-        amount: 0
-      }));
+      months.map(
+        (month) => ({
+          month,
+          amount: 0
+        })
+      );
 
 
     expenses.forEach((expense) => {
@@ -232,7 +189,9 @@ function SystemAnalytics({
           date.getMonth();
 
 
-        totals[monthIndex].amount +=
+        totals[
+          monthIndex
+        ].amount +=
           Number(
             expense.amount || 0
           );
@@ -265,16 +224,20 @@ function SystemAnalytics({
 
       totals[season] =
         (totals[season] || 0) +
-        Number(expense.amount || 0);
+        Number(
+          expense.amount || 0
+        );
 
     });
 
 
     return Object.entries(totals)
-      .map(([name, value]) => ({
-        name,
-        value
-      }));
+      .map(
+        ([name, value]) => ({
+          name,
+          value
+        })
+      );
 
   }, [expenses]);
 
@@ -283,7 +246,9 @@ function SystemAnalytics({
   // CURRENCY
   // =====================================================
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (
+    amount
+  ) => {
 
     return new Intl.NumberFormat(
       'en-IN',
@@ -322,9 +287,7 @@ function SystemAnalytics({
     <div className="system-analytics">
 
 
-      {/* =================================================
-          HEADER
-      ================================================= */}
+      {/* HEADER */}
 
       <div className="analytics-header">
 
@@ -344,9 +307,7 @@ function SystemAnalytics({
       </div>
 
 
-      {/* =================================================
-          SUMMARY CARDS
-      ================================================= */}
+      {/* SUMMARY CARDS */}
 
       <div className="analytics-summary">
 
@@ -444,12 +405,11 @@ function SystemAnalytics({
 
         </div>
 
+
       </div>
 
 
-      {/* =================================================
-          MONTHLY INVESTMENT
-      ================================================= */}
+      {/* MONTHLY INVESTMENT */}
 
       <div className="analytics-section">
 
@@ -518,9 +478,7 @@ function SystemAnalytics({
       </div>
 
 
-      {/* =================================================
-          TWO COLUMN ANALYTICS
-      ================================================= */}
+      {/* TWO COLUMN ANALYTICS */}
 
       <div className="analytics-grid">
 
@@ -541,9 +499,7 @@ function SystemAnalytics({
           {categoryData.length === 0 ? (
 
             <div className="empty-analytics">
-
               No expense data available.
-
             </div>
 
           ) : (
@@ -587,11 +543,13 @@ function SystemAnalytics({
 
                   </Pie>
 
+
                   <Tooltip
                     formatter={(value) =>
                       formatCurrency(value)
                     }
                   />
+
 
                   <Legend />
 
@@ -622,9 +580,7 @@ function SystemAnalytics({
           {cropData.length === 0 ? (
 
             <div className="empty-analytics">
-
               No crop data available.
-
             </div>
 
           ) : (
@@ -686,12 +642,11 @@ function SystemAnalytics({
 
         </div>
 
+
       </div>
 
 
-      {/* =================================================
-          SEASON ANALYSIS
-      ================================================= */}
+      {/* SEASON ANALYSIS */}
 
       <div className="analytics-section">
 
@@ -707,9 +662,7 @@ function SystemAnalytics({
         {seasonData.length === 0 ? (
 
           <div className="empty-analytics">
-
             No season data available.
-
           </div>
 
         ) : (
