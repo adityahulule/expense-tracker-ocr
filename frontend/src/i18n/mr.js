@@ -53,15 +53,25 @@ const mr = {
     marathi: "मराठी",
     hindi: "हिंदी",
 
+    topCropManagement: "प्रमुख पीक व्यवस्थापन",
+
+    // =========================
+    // INSIGHT CARDS
+    // =========================
+
+    topCropInvestment: "सर्वाधिक पीक गुंतवणूक",
+    majorExpenseCategory: "प्रमुख खर्च श्रेणी",
+    activeSeason: "सध्याचा हंगाम",
+    investmentPeriod: "गुंतवणूक कालावधी",
+
     save: "जतन करा",
     cancel: "रद्द करा",
     close: "बंद करा",
     delete: "हटवा",
     edit: "बदला",
     viewDetails: "माहिती पहा",
-    topCropManagement: "प्रमुख पीक व्यवस्थापन",
-    cropManagement: 'पीक व्यवस्थापन',
-    
+
+    cropManagement: "पीक व्यवस्थापन",
 
     loading: "लोड होत आहे...",
     error: "काहीतरी समस्या आली.",

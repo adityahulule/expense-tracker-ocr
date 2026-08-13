@@ -52,7 +52,17 @@ const en = {
     english: "English",
     marathi: "Marathi",
     hindi: "Hindi",
+
     topCropManagement: "TOP CROP MANAGEMENT",
+
+    // =========================
+    // INSIGHT CARDS
+    // =========================
+
+    topCropInvestment: "TOP CROP INVESTMENT",
+    majorExpenseCategory: "MAJOR EXPENSE CATEGORY",
+    activeSeason: "ACTIVE SEASON",
+    investmentPeriod: "INVESTMENT PERIOD",
 
     save: "Save",
     cancel: "Cancel",
@@ -60,7 +70,9 @@ const en = {
     delete: "Delete",
     edit: "Edit",
     viewDetails: "View Details",
-    cropManagement: 'Crop Management',
+
+    cropManagement: "Crop Management",
+
     loading: "Loading...",
     error: "Something went wrong.",
     noData: "No data available."

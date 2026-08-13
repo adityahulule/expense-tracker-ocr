@@ -53,18 +53,30 @@ const hi = {
     marathi: "मराठी",
     hindi: "हिंदी",
 
+    topCropManagement: "प्रमुख फसल प्रबंधन",
+
+    // =========================
+    // INSIGHT CARDS
+    // =========================
+
+    topCropInvestment: "शीर्ष फसल निवेश",
+    majorExpenseCategory: "प्रमुख खर्च श्रेणी",
+    activeSeason: "सक्रिय मौसम",
+    investmentPeriod: "निवेश अवधि",
+
     save: "सहेजें",
     cancel: "रद्द करें",
     close: "बंद करें",
     delete: "हटाएं",
     edit: "बदलें",
     viewDetails: "विवरण देखें",
-    topCropManagement: "प्रमुख फसल प्रबंधन",
 
-    cropManagement: 'फसल प्रबंधन',
+    cropManagement: "फसल प्रबंधन",
+
     loading: "लोड हो रहा है...",
     error: "कुछ समस्या हुई है.",
     noData: "कोई जानकारी उपलब्ध नहीं है."
+
 };
 
 export default hi;
