@@ -26,20 +26,21 @@ function SystemAnalytics({
 }) {
 
   // =====================================================
-  // FARMERS DATA
+  // TOTAL FARMERS
   // =====================================================
 
-  const [loadedFarmers, setLoadedFarmers] =
-    useState(farmers);
+  const [totalFarmers, setTotalFarmers] = useState(
+    Array.isArray(farmers) ? farmers.length : 0
+  );
 
 
   // =====================================================
-  // LOAD FARMERS
+  // LOAD ADMIN DASHBOARD STATISTICS
   // =====================================================
 
   useEffect(() => {
 
-    const loadFarmers = async () => {
+    const loadDashboardStats = async () => {
 
       try {
 
@@ -49,38 +50,45 @@ function SystemAnalytics({
 
 
         const response = await axios.get(
-          `${API_URL}/api/users/farmers`
+          `${API_URL}/api/admin/dashboard-stats`
         );
 
 
-        setLoadedFarmers(
-          Array.isArray(response.data)
-            ? response.data
-            : []
+        console.log(
+          'System Analytics Stats:',
+          response.data
         );
+
+
+        setTotalFarmers(
+          Number(
+            response.data?.totalFarmers || 0
+          )
+        );
+
 
       } catch (error) {
 
         console.error(
-          'Error loading farmers for analytics:',
+          'System Analytics Stats Error:',
           error
         );
 
 
-        // Use farmers received from parent
-        // if API request fails
+        // Fallback to farmers prop
 
-        setLoadedFarmers(
+        setTotalFarmers(
           Array.isArray(farmers)
-            ? farmers
-            : []
+            ? farmers.length
+            : 0
         );
+
       }
 
     };
 
 
-    loadFarmers();
+    loadDashboardStats();
 
   }, [farmers]);
 
@@ -88,10 +96,6 @@ function SystemAnalytics({
   // =====================================================
   // BASIC SYSTEM STATISTICS
   // =====================================================
-
-  const totalFarmers =
-    loadedFarmers.length;
-
 
   const totalExpenses =
     expenses.length;
@@ -132,12 +136,10 @@ function SystemAnalytics({
 
 
     return Object.entries(totals)
-
       .map(([name, value]) => ({
         name,
         value
       }))
-
       .sort(
         (a, b) =>
           b.value - a.value
@@ -170,12 +172,10 @@ function SystemAnalytics({
 
 
     return Object.entries(totals)
-
       .map(([name, value]) => ({
         name,
         value
       }))
-
       .sort(
         (a, b) =>
           b.value - a.value
@@ -271,7 +271,6 @@ function SystemAnalytics({
 
 
     return Object.entries(totals)
-
       .map(([name, value]) => ({
         name,
         value
@@ -360,7 +359,6 @@ function SystemAnalytics({
             👨‍🌾
           </div>
 
-
           <div>
 
             <span>
@@ -383,7 +381,6 @@ function SystemAnalytics({
           <div className="analytics-icon">
             💰
           </div>
-
 
           <div>
 
@@ -410,7 +407,6 @@ function SystemAnalytics({
             📄
           </div>
 
-
           <div>
 
             <span>
@@ -433,7 +429,6 @@ function SystemAnalytics({
           <div className="analytics-icon">
             🔔
           </div>
-
 
           <div>
 
@@ -487,11 +482,9 @@ function SystemAnalytics({
                 vertical={false}
               />
 
-
               <XAxis
                 dataKey="month"
               />
-
 
               <YAxis
                 tickFormatter={(value) =>
@@ -499,13 +492,11 @@ function SystemAnalytics({
                 }
               />
 
-
               <Tooltip
                 formatter={(value) =>
                   formatCurrency(value)
                 }
               />
-
 
               <Bar
                 dataKey="amount"
@@ -596,13 +587,11 @@ function SystemAnalytics({
 
                   </Pie>
 
-
                   <Tooltip
                     formatter={(value) =>
                       formatCurrency(value)
                     }
                   />
-
 
                   <Legend />
 
@@ -657,7 +646,6 @@ function SystemAnalytics({
                     horizontal={false}
                   />
 
-
                   <XAxis
                     type="number"
                     tickFormatter={(value) =>
@@ -665,20 +653,17 @@ function SystemAnalytics({
                     }
                   />
 
-
                   <YAxis
                     type="category"
                     dataKey="name"
                     width={100}
                   />
 
-
                   <Tooltip
                     formatter={(value) =>
                       formatCurrency(value)
                     }
                   />
-
 
                   <Bar
                     dataKey="value"
@@ -746,7 +731,6 @@ function SystemAnalytics({
                     </strong>
 
                   </div>
-
 
                   <span>
                     {formatCurrency(
