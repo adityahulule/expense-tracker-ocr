@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 const API_URL =
   process.env.REACT_APP_API_URL ||
-  'http://localhost:8081';
-
+  'https://expense-tracker-ocr-6.onrender.com';
 function GovernmentSchemes() {
 
   const [schemes, setSchemes] = useState([]);

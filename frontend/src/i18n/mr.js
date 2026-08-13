@@ -59,6 +59,7 @@ const mr = {
     delete: "हटवा",
     edit: "बदला",
     viewDetails: "माहिती पहा",
+    topCropManagement: "प्रमुख पीक व्यवस्थापन",
     cropManagement: 'पीक व्यवस्थापन',
     
 

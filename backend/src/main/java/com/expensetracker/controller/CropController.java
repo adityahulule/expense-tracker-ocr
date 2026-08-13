@@ -1,9 +1,12 @@
 package com.expensetracker.controller;
 
 import com.expensetracker.model.Crop;
+import com.expensetracker.model.UserPermission;
 import com.expensetracker.service.CropService;
+import com.expensetracker.service.PermissionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +17,7 @@ import java.util.List;
 @CrossOrigin(
     origins = {
         "http://localhost:3000",
-        "https://expense-tracker-ocr-6.onrender.com"
+        "https://expense-tracker-frontend-rqn7.onrender.com"
     }
 )
 public class CropController {
@@ -22,20 +25,45 @@ public class CropController {
     @Autowired
     private CropService cropService;
 
+    @Autowired
+    private PermissionService permissionService;
+
+
+    // =====================================================
+    // CHECK CROP MANAGEMENT PERMISSION
+    // =====================================================
+
+    private boolean hasCropAccess(Long userId) {
+
+        if (userId == null) {
+            return false;
+        }
+
+        UserPermission permission =
+                permissionService.getPermissions(userId);
+
+        return permission.isCropManagementAccess();
+    }
+
 
     // =====================================================
     // GET ALL CROPS FOR FARMER
     // =====================================================
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Crop>>
-    getCropsByUser(
+    public ResponseEntity<?> getCropsByUser(
             @PathVariable Long userId) {
+
+        if (!hasCropAccess(userId)) {
+
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("Crop Management access is restricted");
+        }
 
         return ResponseEntity.ok(
                 cropService.getCropsByUserId(userId)
         );
-
     }
 
 
@@ -44,17 +72,27 @@ public class CropController {
     // =====================================================
 
     @GetMapping("/{id}")
-    public ResponseEntity<Crop>
-    getCropById(
+    public ResponseEntity<?> getCropById(
             @PathVariable Long id) {
 
         return cropService
                 .getCropById(id)
-                .map(ResponseEntity::ok)
-                .orElse(
-                    ResponseEntity.notFound().build()
-                );
+                .map(crop -> {
 
+                    if (!hasCropAccess(crop.getUserId())) {
+
+                        return ResponseEntity
+                                .status(HttpStatus.FORBIDDEN)
+                                .body("Crop Management access is restricted");
+                    }
+
+                    return ResponseEntity.ok(crop);
+                })
+                .orElse(
+                    ResponseEntity
+                            .notFound()
+                            .build()
+                );
     }
 
 
@@ -73,8 +111,18 @@ public class CropController {
                 return ResponseEntity
                         .badRequest()
                         .body("userId is required");
-
             }
+
+
+            // Check permission
+
+            if (!hasCropAccess(crop.getUserId())) {
+
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("Crop Management access is restricted");
+            }
+
 
             if (crop.getCropName() == null ||
                 crop.getCropName().trim().isEmpty()) {
@@ -82,8 +130,8 @@ public class CropController {
                 return ResponseEntity
                         .badRequest()
                         .body("Crop name is required");
-
             }
+
 
             Crop savedCrop =
                     cropService.createCrop(crop);
@@ -98,9 +146,7 @@ public class CropController {
                         "Failed to create crop: "
                         + e.getMessage()
                     );
-
         }
-
     }
 
 
@@ -114,6 +160,24 @@ public class CropController {
             @RequestBody Crop cropDetails) {
 
         try {
+
+            if (cropDetails.getUserId() == null) {
+
+                return ResponseEntity
+                        .badRequest()
+                        .body("userId is required");
+            }
+
+
+            // Check permission
+
+            if (!hasCropAccess(cropDetails.getUserId())) {
+
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("Crop Management access is restricted");
+            }
+
 
             Crop updatedCrop =
                     cropService.updateCrop(
@@ -139,9 +203,7 @@ public class CropController {
                         "Failed to update crop: "
                         + e.getMessage()
                     );
-
         }
-
     }
 
 
@@ -155,19 +217,43 @@ public class CropController {
 
         try {
 
+            Crop crop =
+                    cropService
+                            .getCropById(id)
+                            .orElse(null);
+
+            if (crop == null) {
+
+                return ResponseEntity
+                        .notFound()
+                        .build();
+            }
+
+
+            // Check permission
+
+            if (!hasCropAccess(crop.getUserId())) {
+
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("Crop Management access is restricted");
+            }
+
+
             cropService.deleteCrop(id);
 
-            return ResponseEntity.noContent()
+            return ResponseEntity
+                    .noContent()
                     .build();
 
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
 
             return ResponseEntity
-                    .notFound()
-                    .build();
-
+                    .internalServerError()
+                    .body(
+                        "Failed to delete crop: "
+                        + e.getMessage()
+                    );
         }
-
     }
-
 }

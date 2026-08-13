@@ -52,6 +52,7 @@ const en = {
     english: "English",
     marathi: "Marathi",
     hindi: "Hindi",
+    topCropManagement: "TOP CROP MANAGEMENT",
 
     save: "Save",
     cancel: "Cancel",

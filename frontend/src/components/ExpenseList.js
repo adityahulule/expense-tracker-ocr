@@ -267,14 +267,18 @@ function ExpenseList({
   // VIEW RECEIPT
   // =====================================================
 
-  const handleViewReceipt = (id) => {
+ const API_URL =
+    process.env.REACT_APP_API_URL ||
+    'https://expense-tracker-ocr-6.onrender.com';
+
+const handleViewReceipt = (id) => {
 
     window.open(
-      `http://localhost:8081/api/expenses/receipt/${id}`,
-      '_blank'
+        `${API_URL}/api/expenses/receipt/${id}`,
+        '_blank'
     );
 
-  };
+};
 
 
   // =====================================================

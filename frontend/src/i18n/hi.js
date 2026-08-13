@@ -59,6 +59,7 @@ const hi = {
     delete: "हटाएं",
     edit: "बदलें",
     viewDetails: "विवरण देखें",
+    topCropManagement: "प्रमुख फसल प्रबंधन",
 
     cropManagement: 'फसल प्रबंधन',
     loading: "लोड हो रहा है...",

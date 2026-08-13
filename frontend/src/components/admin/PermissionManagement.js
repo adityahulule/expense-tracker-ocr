@@ -6,8 +6,7 @@ import './PermissionManagement.css';
 
 const API_URL =
     process.env.REACT_APP_API_URL ||
-    'http://localhost:8081';
-
+    'https://expense-tracker-ocr-6.onrender.com';
 function PermissionManagement({ selectedFarmer: farmerFromParent }) {
 
     const [farmers, setFarmers] = useState([]);

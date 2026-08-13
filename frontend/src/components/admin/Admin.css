@@ -428,3 +428,14 @@
         grid-template-columns: 1fr;
     }
 }
+.admin-stat-card {
+    color: #14532d;
+}
+
+.admin-stat-card h2 {
+    color: #111827 !important;
+}
+
+.admin-stat-card p {
+    color: #64748b !important;
+}

@@ -3,9 +3,9 @@ import axios from 'axios';
 
 function SchemeManagement() {
 
-    const API_URL =
-        process.env.REACT_APP_API_URL ||
-        'http://localhost:8081';
+const API_URL =
+    process.env.REACT_APP_API_URL ||
+    'https://expense-tracker-ocr-6.onrender.com';
 
     const [schemes, setSchemes] = useState([]);
 
